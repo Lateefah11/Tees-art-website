@@ -1,0 +1,691 @@
+/* ============================================================
+   EDITORIAL GALLERY — gallery.css  v6
+   Tee's Art · "Where Silence Speaks"
+
+   Matches gallery.js v4 class names exactly.
+   Design: cream background, B&W editorial, filmstrip → full layout.
+   ============================================================ */
+
+/* ─── Overlay shell ─────────────────────────────────────────── */
+.gallery-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 6000;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  background: #F0EDE6;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+.gallery-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ─── Sticky viewport canvas ─────────────────────────────── */
+.gallery-sticky {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: #F0EDE6;
+}
+
+/* ─── Scroll space (height managed by JS) ───────────────── */
+.gallery-scroll-space {
+  display: block;
+  width: 1px;
+  pointer-events: none;
+}
+
+/* ─── Horizontal track ───────────────────────────────────── */
+.gallery-track {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+
+/* ─── Gallery items ──────────────────────────────────────── */
+/* GSAP drives x, y, width, height — no gap, no padding      */
+.ge-item {
+  position: absolute;
+  overflow: hidden;
+  will-change: transform, width, height;
+  cursor: default;
+  /* Eliminate any sub-pixel seam between adjacent items */
+  outline: 1px solid transparent;
+}
+
+/* ─── Hover dim overlay ──────────────────────────────────── */
+.ge-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.45s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+.ge-item:hover::before {
+  background: rgba(0, 0, 0, 0.38);
+}
+
+/* ─── "Open art" CTA ─────────────────────────────────────── */
+.ge-hover-cta {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) translateY(10px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.92);
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  z-index: 2;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.ge-item:hover .ge-hover-cta {
+  opacity: 1;
+  transform: translate(-50%, -50%) translateY(0);
+}
+.ge-hover-cta span {
+  font-family: 'Avenir', 'Avenir Next', 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+}
+
+/* ─── Artwork face ───────────────────────────────────────── */
+.ge-art {
+  width: 100%;
+  height: 100%;
+  display: block;
+  position: relative;
+  overflow: hidden;
+  filter: grayscale(1);
+  transition: filter 0.6s ease;
+}
+.ge-item:hover .ge-art {
+  filter: grayscale(0.2);
+}
+
+/* ─── Artwork meta overlay ───────────────────────────────── */
+.ge-meta {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  pointer-events: none;
+  opacity: 0; /* shown by GSAP at end of phase 1 */
+}
+.ge-num {
+  font-family: 'Avenir', 'Avenir Next', 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 0.60rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(240, 237, 230, 0.70);
+}
+.ge-title-label {
+  font-family: 'Avenir', 'Avenir Next', 'Century Gothic', 'Trebuchet MS', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: rgba(240, 237, 230, 0.85);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 280px;
+}
+
+/* ─── HUD container ──────────────────────────────────────── */
+.gallery-hud {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 6100;
+}
+
+/* ─── Close button ───────────────────────────────────────── */
+.gallery-close-btn {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(240, 237, 230, 0.88);
+  border: 1px solid rgba(60, 55, 50, 0.18);
+  color: rgba(40, 36, 30, 0.75);
+  font-size: 1rem;
+  cursor: pointer;
+  pointer-events: all;
+  transition: background 0.22s, color 0.22s, border-color 0.22s;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.gallery-close-btn:hover {
+  background: #1E1B16;
+  color: #F0EDE6;
+  border-color: transparent;
+}
+
+/* ─── Current artwork label (bottom-left) ────────────────── */
+.gallery-label {
+  position: absolute;
+  bottom: 26px;
+  left: 32px;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  color: rgba(40, 36, 30, 0.45);
+  pointer-events: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 480px;
+}
+
+/* ─── End-of-collection hint ─────────────────────────────── */
+.gallery-end-hint {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+.gallery-end-hint.visible {
+  opacity: 1;
+}
+
+.gallery-end-hint__pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(30, 27, 22, 0.55);
+  margin-bottom: 4px;
+  animation: endPulse 2s ease-in-out infinite;
+}
+@keyframes endPulse {
+  0%, 100% { transform: scale(1);   opacity: 0.55; }
+  50%       { transform: scale(1.6); opacity: 1;    }
+}
+
+.gallery-end-hint__line1 {
+  font-family: 'Avenir', 'Avenir Next', 'Century Gothic', sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.30em;
+  text-transform: uppercase;
+  color: rgba(30, 27, 22, 0.45);
+  white-space: nowrap;
+}
+.gallery-end-hint__line2 {
+  font-family: 'Avenir', 'Avenir Next', 'Century Gothic', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  color: rgba(30, 27, 22, 0.80);
+  white-space: nowrap;
+}
+
+/* ─── Scroll hint ────────────────────────────────────────── */
+.gallery-scroll-hint {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+  color: rgba(30, 27, 22, 0.80);
+  opacity: 1;
+  transition: opacity 0.8s ease;
+}
+.gallery-scroll-hint.hidden {
+  opacity: 0;
+}
+.gallery-scroll-hint__text {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.38em;
+  text-transform: uppercase;
+  color: inherit;
+}
+
+/* Three cascading chevrons */
+.gallery-scroll-hint__chevrons {
+  display: block;
+  overflow: visible;
+}
+.gsh-chev {
+  animation: chevWave 1.8s ease-in-out infinite;
+}
+.gsh-chev--1 { animation-delay: 0.00s; }
+.gsh-chev--2 { animation-delay: 0.22s; }
+.gsh-chev--3 { animation-delay: 0.44s; }
+
+@keyframes chevWave {
+  0%, 100% { opacity: 0.15; }
+  50%       { opacity: 1;    }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ARTWORK IMAGES  (piece-01 … piece-09)
+   Served as greyscale from picsum.photos.
+   filter: grayscale(1) on .ge-art is kept as CSS fallback.
+   ═══════════════════════════════════════════════════════════ */
+.artwork__placeholder {
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+
+/* Portrait pieces (01,03,05,07,09) — 2:3 ratio source */
+.piece-01 { background-image: url('https://picsum.photos/seed/tee-art-01/800/1200?grayscale'); }
+.piece-03 { background-image: url('https://picsum.photos/seed/tee-art-03/800/1200?grayscale'); }
+.piece-05 { background-image: url('https://picsum.photos/seed/tee-art-05/800/1200?grayscale'); }
+.piece-07 { background-image: url('https://picsum.photos/seed/tee-art-07/800/1200?grayscale'); }
+.piece-09 { background-image: url('https://picsum.photos/seed/tee-art-09/800/1200?grayscale'); }
+
+/* Landscape pieces (02,04,06,08) — 3:2 ratio source */
+.piece-02 { background-image: url('https://picsum.photos/seed/tee-art-02/1200/800?grayscale'); }
+.piece-04 { background-image: url('https://picsum.photos/seed/tee-art-04/1200/800?grayscale'); }
+.piece-06 { background-image: url('https://picsum.photos/seed/tee-art-06/1200/800?grayscale'); }
+.piece-08 { background-image: url('https://picsum.photos/seed/tee-art-08/1200/800?grayscale'); }
+
+/* ═══════════════════════════════════════════════════════════
+   ARTWORK DETAIL VIEW
+   One image travels from hero centre → sticky left sidebar.
+   GSAP controls all positioning — no duplicate image element.
+   ═══════════════════════════════════════════════════════════ */
+
+.ad-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 6200;
+  background: #F5F3EE;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+.ad-overlay.active { opacity: 1; visibility: visible; }
+
+/* Close button */
+.ad-close {
+  position: fixed;
+  top: 22px;
+  right: 22px;
+  z-index: 6300;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(245, 243, 238, 0.88);
+  border: 1px solid rgba(60,55,50,0.18);
+  color: rgba(40,36,30,0.75);
+  font-size: 1rem;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: background 0.22s, color 0.22s;
+}
+.ad-close:hover { background: #111; color: #F5F3EE; border-color: #111; }
+
+/* ── THE single artwork image ────────────────────────────── */
+/* GSAP drives: left, top, width, height — nothing else here */
+.ad-img {
+  position: absolute;
+  z-index: 10;
+  pointer-events: none;
+  filter: grayscale(1);
+  background-size: cover;
+  background-position: center;
+}
+
+/* ── Hero text (centered below image, fades out on scroll) ── */
+.ad-hero-text {
+  position: absolute;
+  z-index: 10;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+.ad-hero-num {
+  font-family: 'Avenir', 'Avenir Next', sans-serif;
+  font-size: 0.60rem;
+  letter-spacing: 0.30em;
+  text-transform: uppercase;
+  color: rgba(40,36,30,0.40);
+  margin: 0;
+}
+.ad-hero-title {
+  font-family: 'Playfair Display SC', Georgia, serif;
+  font-size: clamp(1.4rem, 3.2vw, 2.4rem);
+  font-weight: 400;
+  color: #111;
+  margin: 0;
+  line-height: 1.15;
+  max-width: 400px;
+}
+.ad-scroll-cue {
+  font-family: 'Avenir', 'Avenir Next', sans-serif;
+  font-size: 0.60rem;
+  letter-spacing: 0.30em;
+  text-transform: uppercase;
+  color: rgba(40,36,30,0.35);
+  margin: 6px 0 0;
+  animation: adCuePulse 2.4s ease-in-out infinite;
+}
+@keyframes adCuePulse {
+  0%, 100% { opacity: 0.35; }
+  50%       { opacity: 0.75; }
+}
+
+/* ── Sidebar text (fades in below sidebar image position) ── */
+.ad-sidebar-text {
+  position: absolute;
+  z-index: 10;
+  pointer-events: none;
+  opacity: 0;
+}
+.ad-st-num {
+  font-family: 'Avenir', 'Avenir Next', sans-serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(40,36,30,0.40);
+  margin: 0 0 6px;
+}
+.ad-st-title {
+  font-family: 'Playfair Display SC', Georgia, serif;
+  font-size: 1rem;
+  font-weight: 400;
+  color: #111;
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* ── Scroll container (under floating layers) ────────────── */
+.ad-scroller {
+  position: absolute;
+  inset: 0;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  z-index: 5;
+}
+
+/* Empty zone — its scroll height drives the image animation */
+.ad-hero-zone { pointer-events: none; }
+
+/* Right-side body; padding-left set by JS to clear sidebar */
+.ad-body {
+  padding-top: 48px;
+  padding-right: 60px;
+  padding-bottom: 120px;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+.ad-body-heading {
+  font-family: 'Playfair Display SC', Georgia, serif;
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  font-weight: 400;
+  color: #111;
+  margin: 0 0 36px;
+  line-height: 1.1;
+}
+
+/* Spec / pricing rows */
+.ad-specs { border-top: 1px solid rgba(60,55,50,0.12); }
+.ad-spec {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  padding: 13px 0;
+  border-bottom: 1px solid rgba(60,55,50,0.08);
+}
+.ad-spec--last { border-bottom: none; margin-bottom: 4px; }
+.ad-spec__key {
+  font-family: 'Avenir', 'Avenir Next', sans-serif;
+  font-size: 0.75rem;
+  color: rgba(40,36,30,0.45);
+  flex-shrink: 0;
+}
+.ad-spec__key em { font-style: normal; font-size: 0.68rem; }
+.ad-spec__val {
+  font-family: 'Avenir', 'Avenir Next', sans-serif;
+  font-size: 0.82rem;
+  color: #111;
+  text-align: right;
+}
+.ad-spec__val--price { font-weight: 600; font-size: 0.92rem; }
+
+/* Acquire button */
+.ad-acquire {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  margin: 28px 0 8px;
+  padding: 16px 24px;
+  background: #111;
+  color: #F5F3EE;
+  font-family: 'Avenir', 'Avenir Next', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: background 0.25s;
+}
+.ad-acquire:hover { background: #333; }
+.ad-acquire-note {
+  font-family: 'Avenir', 'Avenir Next', sans-serif;
+  font-size: 0.68rem;
+  color: rgba(40,36,30,0.40);
+  margin: 0 0 52px;
+  font-style: italic;
+}
+
+/* Story + Collectors */
+.ad-section-title {
+  font-family: 'Playfair Display SC', Georgia, serif;
+  font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+  font-weight: 400;
+  color: #111;
+  margin: 0 0 18px;
+}
+.ad-story { margin-bottom: 52px; }
+.ad-story__para {
+  font-family: 'Avenir', 'Avenir Next', sans-serif;
+  font-size: 0.88rem;
+  line-height: 1.85;
+  color: rgba(40,36,30,0.72);
+  margin: 0 0 14px;
+}
+.ad-collectors__intro {
+  font-family: 'Avenir', 'Avenir Next', sans-serif;
+  font-size: 0.85rem;
+  color: rgba(40,36,30,0.65);
+  margin: 0 0 12px;
+  line-height: 1.7;
+}
+.ad-list { list-style: none; padding: 0; margin: 0; }
+.ad-list li {
+  font-family: 'Avenir', 'Avenir Next', sans-serif;
+  font-size: 0.85rem;
+  line-height: 1.75;
+  color: rgba(40,36,30,0.72);
+  padding: 5px 0 5px 18px;
+  position: relative;
+}
+.ad-list li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: rgba(40,36,30,0.35);
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+/* ── Mobile — linear block layout, no GSAP animation ─────── */
+.ad-overlay.ad-mobile {
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+}
+.ad-overlay.ad-mobile .ad-scroller {
+  position: static;
+  overflow: visible;
+  height: auto;
+}
+.ad-overlay.ad-mobile .ad-hero-zone { display: none; }
+.ad-overlay.ad-mobile .ad-img {
+  position: relative !important;
+  display: block;
+  left: auto !important;
+  top: auto !important;
+  width: 72% !important;
+  max-width: 280px;
+  aspect-ratio: 2 / 3;
+  max-height: 52vh;
+  height: auto !important;
+  margin: 80px auto 0;
+  pointer-events: auto;
+}
+.ad-overlay.ad-mobile .ad-hero-text {
+  position: static !important;
+  opacity: 1 !important;
+  transform: none !important;
+  padding: 20px 24px 8px;
+  align-items: center;
+}
+.ad-overlay.ad-mobile .ad-sidebar-text { display: none !important; }
+.ad-overlay.ad-mobile .ad-body {
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+  padding-top: 24px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── Tablet  (600–1023px) ───────────────────────────────── */
+@media (max-width: 1023px) {
+  .gallery-label {
+    max-width: 320px;
+    font-size: 0.70rem;
+  }
+  .ge-title-label {
+    max-width: 220px;
+    font-size: 0.73rem;
+  }
+}
+
+/* ─── Mobile  (< 600px) ──────────────────────────────────── */
+@media (max-width: 599px) {
+  /* Overlay: ensure momentum scroll works on iOS */
+  .gallery-overlay {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+  }
+
+  /* Close button: large tap target top-left on mobile */
+  .gallery-close-btn {
+    top: 14px;
+    right: 14px;
+    width: 44px;   /* 44px min tap target */
+    height: 44px;
+    font-size: 1.05rem;
+    /* slightly less blur on low-end devices */
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+
+  /* Labels: smaller and capped width */
+  .gallery-label {
+    bottom: 18px;
+    left: 16px;
+    max-width: 240px;
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+  }
+
+  /* Artwork meta: tighter */
+  .ge-meta {
+    bottom: 10px;
+    left: 10px;
+    gap: 2px;
+  }
+  .ge-num {
+    font-size: 0.58rem;
+    letter-spacing: 0.22em;
+  }
+  .ge-title-label {
+    max-width: 160px;
+    font-size: 0.65rem;
+  }
+
+  /* End hint: allow wrapping on small screens */
+  .gallery-end-hint {
+    bottom: 18px;
+    gap: 6px;
+    width: 90vw;
+  }
+  .gallery-end-hint__line1,
+  .gallery-end-hint__line2 {
+    white-space: normal;
+    font-size: 0.70rem;
+  }
+
+  /* Scroll hint: centered, compact */
+  .gallery-scroll-hint {
+    bottom: 18px;
+    gap: 7px;
+  }
+  .gallery-scroll-hint__text {
+    font-size: 0.62rem;
+    letter-spacing: 0.28em;
+  }
+  .gallery-scroll-hint__chevrons {
+    width: 15px;
+    height: 22px;
+  }
+
+  /* No hover grayscale transition on touch — saves a paint */
+  .ge-item:hover .ge-art {
+    filter: grayscale(1);
+  }
+}
+
+/* ─── Very small screens  (< 380px) ─────────────────────── */
+@media (max-width: 379px) {
+  .gallery-label {
+    max-width: 180px;
+    font-size: 0.58rem;
+  }
+  .ge-title-label {
+    max-width: 130px;
+    font-size: 0.60rem;
+  }
+}
