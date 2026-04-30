@@ -420,7 +420,10 @@
     if (document.getElementById('artworkDetail')) return;
     document.body.insertAdjacentHTML('beforeend', `
       <div id="artworkDetail" class="ad-overlay">
-        <button class="ad-close" id="adClose" aria-label="Close artwork detail">&#x2715;</button>
+        <button class="ad-close" id="adClose" aria-label="Back to gallery">
+          <span class="ad-close__icon">&#x2190;</span>
+          <span>Back</span>
+        </button>
 
         <!-- THE single artwork image — GSAP moves this from hero → sidebar -->
         <div class="ad-img artwork__placeholder" id="adImg" role="img" aria-label=""></div>
