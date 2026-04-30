@@ -21,11 +21,6 @@
   /* ─── Artwork data ─────────────────────────────────────── */
   const ARTWORKS = [
     { num:'01', css:'piece-01',
-      images:[
-        'https://picsum.photos/seed/tee-art-01/800/1200?grayscale',
-        'https://picsum.photos/seed/tee-art-01b/800/1200?grayscale',
-        'https://picsum.photos/seed/tee-art-01c/800/1200?grayscale',
-      ],
       title:'The Weight of a Held Breath',
       year:'2025', medium:'Mixed media on canvas', size:'90 × 120 cm',
       price:{ original:'$2,800', print:'$750' },
@@ -35,11 +30,6 @@
         'To hold one\'s breath is to exist in a liminal space between what is felt and what is shown. This work invites the viewer to sit in that tension.',
       ]},
     { num:'02', css:'piece-02',
-      images:[
-        'https://picsum.photos/seed/tee-art-02/800/1200?grayscale',
-        'https://picsum.photos/seed/tee-art-02b/800/1200?grayscale',
-        'https://picsum.photos/seed/tee-art-02c/800/1200?grayscale',
-      ],
       title:'Unnamed Grief',
       year:'2025', medium:'Acrylic on linen', size:'80 × 100 cm',
       price:{ original:'$2,200', print:'$600' },
@@ -49,11 +39,6 @@
         'This work was made during a period of quiet devastation. It does not ask to be understood — only witnessed.',
       ]},
     { num:'03', css:'piece-03',
-      images:[
-        'https://picsum.photos/seed/tee-art-03/800/1200?grayscale',
-        'https://picsum.photos/seed/tee-art-03b/800/1200?grayscale',
-        'https://picsum.photos/seed/tee-art-03c/800/1200?grayscale',
-      ],
       title:'Portrait of Stillness',
       year:'2024', medium:'Oil on canvas', size:'100 × 100 cm',
       price:{ original:'$3,200', print:'$850' },
@@ -63,11 +48,6 @@
         'Oil allows time to be embedded in the surface. Each layer dried before the next was applied — patience made visible.',
       ]},
     { num:'04', css:'piece-04',
-      images:[
-        'https://picsum.photos/seed/tee-art-04/800/1200?grayscale',
-        'https://picsum.photos/seed/tee-art-04b/800/1200?grayscale',
-        'https://picsum.photos/seed/tee-art-04c/800/1200?grayscale',
-      ],
       title:'Where Language Fails',
       year:'2025', medium:'Watercolour & ink', size:'70 × 90 cm',
       price:{ original:'$1,800', print:'$500' },
@@ -77,11 +57,6 @@
         'What remains is not what was planned, but what was true.',
       ]},
     { num:'05', css:'piece-05',
-      images:[
-        'https://picsum.photos/seed/tee-art-05/800/1200?grayscale',
-        'https://picsum.photos/seed/tee-art-05b/800/1200?grayscale',
-        'https://picsum.photos/seed/tee-art-05c/800/1200?grayscale',
-      ],
       title:'The Quietest Scream',
       year:'2025', medium:'Acrylic on panel', size:'120 × 150 cm',
       price:{ original:'$3,800', print:'$950' },
@@ -91,11 +66,6 @@
         'The silence in the image is not absence. It is a sound at a frequency others cannot register.',
       ]},
     { num:'06', css:'piece-06',
-      images:[
-        'https://picsum.photos/seed/tee-art-06/800/1200?grayscale',
-        'https://picsum.photos/seed/tee-art-06b/800/1200?grayscale',
-        'https://picsum.photos/seed/tee-art-06c/800/1200?grayscale',
-      ],
       title:'Residue',
       year:'2024', medium:'Mixed media on paper', size:'60 × 80 cm',
       price:{ original:'$1,600', print:'$450' },
@@ -105,11 +75,6 @@
         'Residue is not failure. It is proof that something happened here.',
       ]},
     { num:'07', css:'piece-07',
-      images:[
-        'https://picsum.photos/seed/tee-art-07/800/1200?grayscale',
-        'https://picsum.photos/seed/tee-art-07b/800/1200?grayscale',
-        'https://picsum.photos/seed/tee-art-07c/800/1200?grayscale',
-      ],
       title:'I Know This Feeling',
       year:'2025', medium:'Oil on canvas', size:'80 × 120 cm',
       price:{ original:'$2,600', print:'$700' },
@@ -119,11 +84,6 @@
         'The title is a statement, not a question. There is no ambiguity in recognition.',
       ]},
     { num:'08', css:'piece-08',
-      images:[
-        'https://picsum.photos/seed/tee-art-08/800/1200?grayscale',
-        'https://picsum.photos/seed/tee-art-08b/800/1200?grayscale',
-        'https://picsum.photos/seed/tee-art-08c/800/1200?grayscale',
-      ],
       title:'Dissolve',
       year:'2025', medium:'Acrylic & resin', size:'100 × 130 cm',
       price:{ original:'$3,400', print:'$900' },
@@ -133,11 +93,6 @@
         'There is something clarifying about dissolution. What remains when form is released is only what was always essential.',
       ]},
     { num:'09', css:'piece-09',
-      images:[
-        'https://picsum.photos/seed/tee-art-09/800/1200?grayscale',
-        'https://picsum.photos/seed/tee-art-09b/800/1200?grayscale',
-        'https://picsum.photos/seed/tee-art-09c/800/1200?grayscale',
-      ],
       title:'After All of It',
       year:'2025', medium:'Mixed media on canvas', size:'90 × 120 cm',
       price:{ original:'$2,800', print:'$750' },
@@ -208,7 +163,6 @@
   let items    = [];
   let lastCfg  = null;
   let adTl = null, adSt = null, adScrollerListener = null;
-  let adCurrentImg = 0, adCurrentArt = null;
 
   /* ═══════════════════════════════════════════════════════════
      BUILD HTML
@@ -473,17 +427,15 @@
 
         <!-- Hero text: number + title + scroll cue (fades out on scroll) -->
         <div class="ad-hero-text" id="adHeroText">
-          <div class="ad-thumbs" id="adHeroThumbs"></div>
           <p class="ad-hero-num" id="adNum"></p>
           <h1 class="ad-hero-title" id="adTitle"></h1>
           <p class="ad-scroll-cue">Scroll to explore</p>
         </div>
 
-        <!-- Sidebar text: number + title + thumbs (fades in as image arrives at sidebar) -->
+        <!-- Sidebar text: number + title (fades in as image arrives at sidebar) -->
         <div class="ad-sidebar-text" id="adSidebarText">
           <p class="ad-st-num" id="adStNum"></p>
           <h2 class="ad-st-title" id="adStTitle"></h2>
-          <div class="ad-st-thumbs" id="adStThumbs"></div>
         </div>
 
         <!-- Scroll container — sits under the floating layers -->
@@ -537,31 +489,6 @@
       </div>`;
   }
 
-  function buildAdThumbs(art) {
-    return art.images.map((url, i) =>
-      `<div class="ad-thumb-item${i === 0 ? ' active' : ''}"
-            data-img-idx="${i}"
-            style="background-image:url('${url}')"
-            role="button" tabindex="0"
-            aria-label="View image ${i + 1} of ${art.images.length}"></div>`
-    ).join('');
-  }
-
-  function setAdImage(art, idx) {
-    adCurrentImg = idx;
-    const adImg = document.getElementById('adImg');
-    if (!adImg) return;
-    /* Soft cross-fade on swap */
-    adImg.style.opacity = '0';
-    setTimeout(() => {
-      adImg.style.backgroundImage = `url('${art.images[idx]}')`;
-      adImg.style.opacity = '';
-    }, 160);
-    document.querySelectorAll('.ad-thumb-item').forEach(el => {
-      el.classList.toggle('active', parseInt(el.dataset.imgIdx, 10) === idx);
-    });
-  }
-
   function openArtworkDetail(idx) {
     const art           = ARTWORKS[idx];
     const detEl         = document.getElementById('artworkDetail');
@@ -581,21 +508,13 @@
     }
 
     /* Populate content */
-    adCurrentArt = art;
-    adImg.className = 'ad-img artwork__placeholder';
+    adImg.className = `ad-img artwork__placeholder ${art.css}`;
     adImg.setAttribute('aria-label', art.title);
     document.getElementById('adNum').textContent     = art.num;
     document.getElementById('adTitle').textContent   = art.title;
     document.getElementById('adStNum').textContent   = art.num;
     document.getElementById('adStTitle').textContent = art.title;
     adBody.innerHTML = buildAdBody(art);
-
-    /* Thumbnails + initial image (no cross-fade on first load) */
-    const thumbsHTML = buildAdThumbs(art);
-    document.getElementById('adHeroThumbs').innerHTML = thumbsHTML;
-    document.getElementById('adStThumbs').innerHTML   = thumbsHTML;
-    adImg.style.backgroundImage = `url('${art.images[0]}')`;
-    adCurrentImg = 0;
 
     const VW = window.innerWidth;
     const VH = window.innerHeight;
@@ -721,27 +640,6 @@
     /* Artwork detail — close button */
     document.addEventListener('click', e => {
       if (e.target.closest('#adClose')) closeArtworkDetail();
-    });
-
-    /* Artwork detail — thumbnail click to switch image */
-    document.addEventListener('click', e => {
-      const thumb = e.target.closest('.ad-thumb-item');
-      if (!thumb) return;
-      if (!document.getElementById('artworkDetail')?.classList.contains('active')) return;
-      if (!adCurrentArt) return;
-      const idx = parseInt(thumb.dataset.imgIdx, 10);
-      if (!isNaN(idx) && idx !== adCurrentImg) setAdImage(adCurrentArt, idx);
-    });
-
-    /* Keyboard: Enter on focused thumbnail */
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Enter') {
-        const thumb = e.target.closest('.ad-thumb-item');
-        if (thumb && document.getElementById('artworkDetail')?.classList.contains('active') && adCurrentArt) {
-          const idx = parseInt(thumb.dataset.imgIdx, 10);
-          if (!isNaN(idx) && idx !== adCurrentImg) setAdImage(adCurrentArt, idx);
-        }
-      }
     });
 
     document.addEventListener('keydown', e => {
