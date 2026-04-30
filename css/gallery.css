@@ -154,27 +154,33 @@
 .gallery-close-btn {
   position: absolute;
   top: 22px;
-  right: 22px;
-  width: 42px;
-  height: 42px;
+  left: 22px;
+  height: 44px;
+  padding: 0 18px 0 14px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 9px;
+  font-family: 'Avenir', 'Avenir Next', 'Century Gothic', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   background: rgba(240, 237, 230, 0.88);
   border: 1px solid rgba(60, 55, 50, 0.18);
+  border-radius: 40px;
   color: rgba(40, 36, 30, 0.75);
-  font-size: 1rem;
   cursor: pointer;
   pointer-events: all;
   transition: background 0.22s, color 0.22s, border-color 0.22s;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  white-space: nowrap;
 }
 .gallery-close-btn:hover {
   background: #1E1B16;
   color: #F0EDE6;
   border-color: transparent;
 }
+.gallery-close-btn__icon { font-size: 0.85rem; line-height: 1; }
 
 /* ─── Current artwork label (bottom-left) ────────────────── */
 .gallery-label {
@@ -615,14 +621,13 @@
     overscroll-behavior-y: contain;
   }
 
-  /* Close button: large tap target top-left on mobile */
+  /* Close button: top-left on mobile */
   .gallery-close-btn {
     top: 14px;
-    right: 14px;
-    width: 44px;   /* 44px min tap target */
-    height: 44px;
-    font-size: 1.05rem;
-    /* slightly less blur on low-end devices */
+    left: 14px;
+    height: 40px;
+    padding: 0 14px 0 10px;
+    font-size: 0.68rem;
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
   }

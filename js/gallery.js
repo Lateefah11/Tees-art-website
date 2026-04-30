@@ -201,7 +201,10 @@
 
         <div class="gallery-hud" aria-hidden="true">
           <button class="gallery-close-btn" id="galleryCloseBtn"
-                  aria-label="Exit gallery" aria-hidden="false">&#x2715;</button>
+                  aria-label="Back to exhibition" aria-hidden="false">
+            <span class="gallery-close-btn__icon">&#x2190;</span>
+            <span>Back</span>
+          </button>
           <div class="gallery-label" id="galleryLabel"></div>
           <div class="gallery-scroll-hint" id="galleryScrollHint">
             <span class="gallery-scroll-hint__text">Scroll</span>
