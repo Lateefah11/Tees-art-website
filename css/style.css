@@ -211,16 +211,19 @@ body.cursor-hover .cursor-follower {
 }
 
 .nav__logo a {
-  font-family: var(--font-sans);
-  font-weight: 400;
-  font-size: 0.78rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
+  display: flex;
+  align-items: center;
   color: var(--text);
-  transition: color var(--transition-fast);
+  transition: opacity var(--transition-fast);
 }
 
-.nav__logo a:hover { color: var(--accent); }
+.nav__logo a:hover { opacity: 0.7; }
+
+.nav__logo-img {
+  height: 32px;
+  width: auto;
+  display: block;
+}
 
 .nav__links {
   display: flex;
