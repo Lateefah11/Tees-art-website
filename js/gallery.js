@@ -539,11 +539,12 @@
       const heroLeft = Math.round((VW - heroW) / 2);
       const heroTop  = Math.round(VH * 0.10);
 
-      // Sidebar image
-      const sideW    = Math.min(Math.round(VW * 0.18), 240);
-      const sideH    = Math.round(sideW * 1.5);
-      const sideLeft = 36;
-      const sideTop  = 40;
+      // Sidebar image — 40% of viewport width, height capped to fit screen
+      const sideLeft  = 36;
+      const sideTop   = 40;
+      const sideW     = Math.round(VW * 0.40);
+      const maxSideH  = VH - sideTop - 40;
+      const sideH     = Math.min(Math.round(sideW * 1.5), maxSideH);
 
       const htTop    = heroTop + heroH + 24;          // hero text below image
       const stTop    = sideTop + sideH + 16;          // sidebar text below image
