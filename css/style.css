@@ -526,9 +526,9 @@ body.cursor-hover .cursor-follower {
 }
 
 .hero__chevron { display: block; }
-.hero__chevron--1 { opacity: 0.25; }
+.hero__chevron--1 { opacity: 0.9; }
 .hero__chevron--2 { opacity: 0.55; }
-.hero__chevron--3 { opacity: 0.9; }
+.hero__chevron--3 { opacity: 0.25; }
 
 /* ── Gallery Tour ─────────────────────────────────────────── */
 
