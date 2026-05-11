@@ -480,23 +480,31 @@ body.cursor-hover .cursor-follower {
   isolation: isolate;
 }
 
-/* Rotating shine comet that orbits the button edge */
+/* Glow comet that travels along the pill border — mask clips it to just the border ring */
 .btn-wrap::before {
   content: '';
   position: absolute;
-  inset: -4px;
+  inset: -3px;
   border-radius: 110px;
+  padding: 3px;
   background: conic-gradient(from 0deg,
     transparent 0deg,
-    transparent 130deg,
-    rgba(255, 225, 170, 0.45) 162deg,
-    rgba(255, 255, 255, 0.98) 180deg,
-    rgba(255, 225, 170, 0.45) 198deg,
-    transparent 230deg,
+    transparent 55deg,
+    rgba(74, 30, 40, 0.25)  95deg,
+    rgba(160, 70, 90, 0.75) 130deg,
+    rgba(255, 220, 230, 1)  150deg,
+    rgba(160, 70, 90, 0.75) 170deg,
+    rgba(74, 30, 40, 0.25)  210deg,
+    transparent 250deg,
     transparent 360deg
   );
-  animation: btn-glow-orbit 2.8s linear infinite;
-  filter: blur(2.5px);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  filter: blur(1.5px);
+  animation: btn-glow-orbit 3s linear infinite;
 }
 
 
