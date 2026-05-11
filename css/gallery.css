@@ -393,7 +393,7 @@
   font-size: 0.60rem;
   letter-spacing: 0.30em;
   text-transform: uppercase;
-  color: rgba(40,36,30,0.35);
+  color: rgba(40,36,30,0.65);
   margin: 6px 0 0;
   animation: adCuePulse 2.4s ease-in-out infinite;
 }
