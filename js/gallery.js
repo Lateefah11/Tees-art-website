@@ -221,6 +221,26 @@
             <p class="gallery-end-hint__line1">You've seen all 9 works</p>
             <p class="gallery-end-hint__line2">Click any artwork to view in full detail</p>
           </div>
+
+          <!-- Spotify ambient player -->
+          <div class="gallery-music" id="galleryMusic">
+            <button class="gallery-music__toggle" id="galleryMusicToggle"
+                    aria-label="Toggle music player" aria-expanded="false">
+              <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 3v12.26A4 4 0 1 0 11 19V8h5V3H9z"/>
+              </svg>
+            </button>
+            <div class="gallery-music__player" id="galleryMusicPlayer" aria-hidden="true">
+              <iframe
+                id="spotifyFrame"
+                src="https://open.spotify.com/embed/track/0E4hFnEC0U8t4gxEAX8X3Y?utm_source=generator&theme=0"
+                width="100%" height="80"
+                frameborder="0"
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                loading="lazy">
+              </iframe>
+            </div>
+          </div>
         </div>
 
       </div>`);
@@ -662,6 +682,20 @@
     });
   }
 
+  /* ── Music player toggle ────────────────────────────────── */
+  function initMusicPlayer() {
+    const toggle = document.getElementById('galleryMusicToggle');
+    const player = document.getElementById('galleryMusicPlayer');
+    if (!toggle || !player) return;
+
+    toggle.addEventListener('click', () => {
+      const open = player.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      toggle.classList.toggle('active', open);
+      player.setAttribute('aria-hidden', open ? 'false' : 'true');
+    });
+  }
+
   /* ═══════════════════════════════════════════════════════════
      ZOOM MODAL
   ═══════════════════════════════════════════════════════════ */
@@ -880,6 +914,7 @@
     buildArtworkDetail();
     setup();
     wireEvents();
+    initMusicPlayer();
     initZoomModal();
   }
 
