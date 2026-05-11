@@ -306,6 +306,35 @@
   }
 
   /* ── Init All ────────────────────────────────────────────── */
+  /* ── Pulse Beams ────────────────────────────────────────── */
+  function initPulseBeams() {
+    const comets = qsa('.beam-comet');
+    if (!comets.length || typeof gsap === 'undefined') return;
+
+    comets.forEach(path => {
+      const len = path.getTotalLength();
+      const comet = len * 0.28; // visible comet dash = 28% of path length
+      const delay = parseFloat(path.dataset.delay || 0);
+
+      gsap.set(path, {
+        strokeDasharray: `${comet} ${len + comet}`,
+        strokeDashoffset: 0
+      });
+
+      gsap.fromTo(path,
+        { strokeDashoffset: comet },
+        {
+          strokeDashoffset: -(len + comet),
+          duration: 2.2,
+          ease: 'none',
+          delay,
+          repeat: -1,
+          repeatDelay: 1.8
+        }
+      );
+    });
+  }
+
   function init() {
     initPreloader();
     initCursor();
@@ -317,6 +346,7 @@
     initContactForm();
     initSmoothScroll();
     initParallax();
+    initPulseBeams();
   }
 
   if (document.readyState === 'loading') {

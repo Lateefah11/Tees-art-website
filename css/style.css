@@ -515,6 +515,43 @@ body.cursor-hover .cursor-follower {
   .btn-click-hint { display: none; }
 }
 
+/* ── Pulse Beams ──────────────────────────────────────────── */
+.pulse-beams-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pulse-beams-svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(858px, 92vw);
+  height: auto;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.beam-track {
+  stroke: rgba(74, 30, 40, 0.18);
+  stroke-width: 1;
+}
+
+.beam-comet {
+  stroke: #4A1E28;
+  stroke-width: 2;
+  stroke-linecap: round;
+  filter: url(#beam-glow);
+}
+
+.beam-dot {
+  fill: rgba(74, 30, 40, 0.25);
+  stroke: rgba(74, 30, 40, 0.5);
+  stroke-width: 1.5;
+}
+
 /* Scroll chevrons */
 .hero__scroll-chevrons {
   display: flex;

@@ -71,20 +71,65 @@
           <p class="hero__subtitle reveal reveal--delay-2">An intimate collection exploring loneliness, feminine strength, and the quiet power of presence.</p>
         </div>
         <div class="hero__cta-group reveal reveal--delay-3">
-          <div class="btn-wrap">
-            <a href="#hero" class="btn-outline" id="ctaBtn">
-              <span class="btn-outline__diamond">&#9670;</span>
-              <span class="btn-outline__text">Start to Explore</span>
-              <span class="btn-outline__diamond">&#9670;</span>
-            </a>
-            <div class="btn-click-hint" aria-hidden="true">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-                   stroke="currentColor" stroke-width="1.8"
-                   stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="15 18 9 12 15 6"></polyline>
-              </svg>
-              <span>click</span>
+          <div class="pulse-beams-wrap">
+
+            <!-- Pulse beam SVG — paths radiate from button centre (429, 217) -->
+            <svg class="pulse-beams-svg" viewBox="0 0 858 434" fill="none"
+                 xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <defs>
+                <filter id="beam-glow" x="-30%" y="-30%" width="160%" height="160%">
+                  <feGaussianBlur stdDeviation="3" result="blur"/>
+                  <feMerge>
+                    <feMergeNode in="blur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+
+              <!-- Base tracks (always visible, dim) -->
+              <path class="beam-track" d="M269 220.5H16.5C10.9772 220.5 6.5 224.977 6.5 230.5V398.5"/>
+              <path class="beam-track" d="M568 200H841C846.523 200 851 195.523 851 190V40"/>
+              <path class="beam-track" d="M425.5 274V333C425.5 338.523 421.023 343 415.5 343H152C146.477 343 142 347.477 142 353V426.5"/>
+              <path class="beam-track" d="M493 274V333.226C493 338.749 497.477 343.226 503 343.226H760C765.523 343.226 770 347.703 770 353.226V427"/>
+              <path class="beam-track" d="M380 168V17C380 11.4772 384.477 7 390 7H414"/>
+
+              <!-- Animated comet paths -->
+              <path class="beam-comet" data-delay="0"   d="M269 220.5H16.5C10.9772 220.5 6.5 224.977 6.5 230.5V398.5"/>
+              <path class="beam-comet" data-delay="0.5" d="M568 200H841C846.523 200 851 195.523 851 190V40"/>
+              <path class="beam-comet" data-delay="1.0" d="M425.5 274V333C425.5 338.523 421.023 343 415.5 343H152C146.477 343 142 347.477 142 353V426.5"/>
+              <path class="beam-comet" data-delay="1.5" d="M493 274V333.226C493 338.749 497.477 343.226 503 343.226H760C765.523 343.226 770 347.703 770 353.226V427"/>
+              <path class="beam-comet" data-delay="2.0" d="M380 168V17C380 11.4772 384.477 7 390 7H414"/>
+
+              <!-- Connection dots -->
+              <circle class="beam-dot" cx="6.5"   cy="398.5" r="5"/>
+              <circle class="beam-dot" cx="269"   cy="220.5" r="4"/>
+              <circle class="beam-dot" cx="851"   cy="34"    r="5"/>
+              <circle class="beam-dot" cx="568"   cy="200"   r="4"/>
+              <circle class="beam-dot" cx="142"   cy="427"   r="5"/>
+              <circle class="beam-dot" cx="425.5" cy="274"   r="4"/>
+              <circle class="beam-dot" cx="770"   cy="427"   r="5"/>
+              <circle class="beam-dot" cx="493"   cy="274"   r="4"/>
+              <circle class="beam-dot" cx="414"   cy="7"     r="5"/>
+              <circle class="beam-dot" cx="380"   cy="168"   r="4"/>
+            </svg>
+
+            <!-- Button — unchanged white pill style -->
+            <div class="btn-wrap">
+              <a href="#hero" class="btn-outline" id="ctaBtn">
+                <span class="btn-outline__diamond">&#9670;</span>
+                <span class="btn-outline__text">Start to Explore</span>
+                <span class="btn-outline__diamond">&#9670;</span>
+              </a>
+              <div class="btn-click-hint" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="1.8"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+                <span>click</span>
+              </div>
             </div>
+
           </div>
           <div class="hero__scroll-chevrons" aria-hidden="true">
             <svg class="hero__chevron hero__chevron--1" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
