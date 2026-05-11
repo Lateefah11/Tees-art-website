@@ -1857,7 +1857,7 @@ body.cursor-hover .cursor-follower {
 .about-content {
   max-width: 900px;
   margin: 0 auto;
-  padding: clamp(80px, 12vw, 140px) clamp(24px, 6vw, 60px) 100px;
+  padding: clamp(28px, 4vw, 48px) clamp(24px, 6vw, 60px) 100px;
   display: flex;
   flex-direction: column;
   align-items: center;
