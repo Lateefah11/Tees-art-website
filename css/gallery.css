@@ -335,6 +335,7 @@
   gap: 9px;
   background: rgba(245, 243, 238, 0.88);
   border: 1px solid rgba(60,55,50,0.18);
+  border-radius: 40px;
   color: rgba(40,36,30,0.75);
   font-family: 'Avenir', 'Avenir Next', 'Century Gothic', sans-serif;
   font-size: 0.72rem;
