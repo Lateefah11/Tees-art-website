@@ -1845,7 +1845,7 @@ body.cursor-hover .cursor-follower {
 
 /* Centred content column */
 .about-content {
-  max-width: 760px;
+  max-width: 900px;
   margin: 0 auto;
   padding: clamp(80px, 12vw, 140px) clamp(24px, 6vw, 60px) 100px;
   display: flex;
@@ -1911,7 +1911,7 @@ body.cursor-hover .cursor-follower {
   font-weight: 300;
   line-height: 1.55;
   color: var(--text);
-  max-width: 720px;
+  max-width: 880px;
   margin: 0 0 36px;
   font-style: normal;
 }
