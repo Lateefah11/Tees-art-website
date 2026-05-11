@@ -451,6 +451,15 @@
           <!-- Right-side body content (padding-left set by JS) -->
           <div class="ad-body" id="adBody"></div>
         </div>
+
+        <!-- Image zoom modal -->
+        <div id="adZoomModal" class="ad-zoom-modal" aria-hidden="true">
+          <button class="ad-zoom-close" id="adZoomClose" aria-label="Close zoom">&#x2715;</button>
+          <div class="ad-zoom-stage" id="adZoomStage">
+            <div class="ad-zoom-img artwork__placeholder" id="adZoomImg"></div>
+          </div>
+          <p class="ad-zoom-hint" id="adZoomHint">Scroll to zoom &nbsp;&middot;&nbsp; Drag to pan &nbsp;&middot;&nbsp; Double-click to reset</p>
+        </div>
       </div>`);
   }
 
@@ -654,6 +663,135 @@
   }
 
   /* ═══════════════════════════════════════════════════════════
+     ZOOM MODAL
+  ═══════════════════════════════════════════════════════════ */
+  function initZoomModal() {
+    const modal    = document.getElementById('adZoomModal');
+    const stage    = document.getElementById('adZoomStage');
+    const zoomImg  = document.getElementById('adZoomImg');
+    const closeBtn = document.getElementById('adZoomClose');
+    const hint     = document.getElementById('adZoomHint');
+    if (!modal) return;
+
+    let scale = 1, panX = 0, panY = 0;
+    const MIN = 1, MAX = 5;
+
+    function applyTransform(animate) {
+      zoomImg.style.transition = animate ? 'transform 0.3s ease' : 'none';
+      zoomImg.style.transform  = `translate(${panX}px,${panY}px) scale(${scale})`;
+      stage.style.cursor = scale > 1 ? 'grab' : 'zoom-in';
+    }
+
+    function clampPan() {
+      const hw = (zoomImg.offsetWidth  * (scale - 1)) / 2;
+      const hh = (zoomImg.offsetHeight * (scale - 1)) / 2;
+      panX = Math.max(-hw, Math.min(hw, panX));
+      panY = Math.max(-hh, Math.min(hh, panY));
+    }
+
+    function openZoom() {
+      const adImg = document.getElementById('adImg');
+      if (!adImg) return;
+      const pieceClass = [...adImg.classList].find(c => c.startsWith('piece-')) || '';
+      scale = 1; panX = 0; panY = 0;
+      zoomImg.className = `ad-zoom-img artwork__placeholder ${pieceClass}`;
+      applyTransform(false);
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+      if (hint) { hint.style.opacity = '1'; }
+    }
+
+    function closeZoom() {
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+
+    /* Open on ad-img click — forward scroll to scroller so it still works */
+    const adImg = document.getElementById('adImg');
+    if (adImg) {
+      adImg.style.pointerEvents = 'auto';
+      adImg.style.cursor = 'zoom-in';
+      adImg.addEventListener('click', openZoom);
+      adImg.addEventListener('wheel', e => {
+        const scroller = document.getElementById('adScroller');
+        if (scroller) scroller.scrollTop += e.deltaY;
+      }, { passive: true });
+    }
+
+    closeBtn?.addEventListener('click', e => { e.stopPropagation(); closeZoom(); });
+    modal.addEventListener('click', e => {
+      if (e.target === modal) closeZoom();
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && modal.classList.contains('open')) closeZoom();
+    });
+
+    /* Scroll-to-zoom */
+    stage.addEventListener('wheel', e => {
+      e.preventDefault();
+      const factor = e.deltaY < 0 ? 1.12 : 0.89;
+      scale = Math.max(MIN, Math.min(MAX, scale * factor));
+      if (scale === MIN) { panX = 0; panY = 0; }
+      else clampPan();
+      applyTransform(false);
+      if (hint) { hint.style.opacity = '0'; }
+    }, { passive: false });
+
+    /* Double-click: toggle 2.5× / reset */
+    stage.addEventListener('dblclick', () => {
+      scale = scale > 1.2 ? 1 : 2.5;
+      panX = 0; panY = 0;
+      applyTransform(true);
+    });
+
+    /* Drag-to-pan */
+    let dragging = false, dx0 = 0, dy0 = 0, px0 = 0, py0 = 0;
+    stage.addEventListener('mousedown', e => {
+      if (scale <= 1) return;
+      dragging = true;
+      dx0 = e.clientX; dy0 = e.clientY;
+      px0 = panX;      py0 = panY;
+      stage.style.cursor = 'grabbing';
+      e.preventDefault();
+    });
+    document.addEventListener('mousemove', e => {
+      if (!dragging) return;
+      panX = px0 + (e.clientX - dx0);
+      panY = py0 + (e.clientY - dy0);
+      clampPan();
+      applyTransform(false);
+    });
+    document.addEventListener('mouseup', () => {
+      if (!dragging) return;
+      dragging = false;
+      stage.style.cursor = scale > 1 ? 'grab' : 'zoom-in';
+    });
+
+    /* Pinch-to-zoom (touch) */
+    let lastPinchDist = 0;
+    stage.addEventListener('touchstart', e => {
+      if (e.touches.length === 2) {
+        lastPinchDist = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        );
+      }
+    }, { passive: true });
+    stage.addEventListener('touchmove', e => {
+      if (e.touches.length !== 2) return;
+      e.preventDefault();
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      scale = Math.max(MIN, Math.min(MAX, scale * (dist / lastPinchDist)));
+      lastPinchDist = dist;
+      clampPan();
+      applyTransform(false);
+    }, { passive: false });
+  }
+
+  /* ═══════════════════════════════════════════════════════════
      EVENTS
   ═══════════════════════════════════════════════════════════ */
   function wireEvents() {
@@ -742,6 +880,7 @@
     buildArtworkDetail();
     setup();
     wireEvents();
+    initZoomModal();
   }
 
   if (document.readyState === 'loading') {

@@ -352,13 +352,95 @@
 
 /* ── THE single artwork image ────────────────────────────── */
 /* GSAP drives: left, top, width, height — nothing else here */
+/* pointer-events set to auto by JS so clicks open zoom       */
 .ad-img {
   position: absolute;
   z-index: 10;
-  pointer-events: none;
+  pointer-events: none; /* JS overrides to auto after build */
   filter: grayscale(1);
   background-size: cover;
   background-position: center;
+}
+
+/* ── Zoom modal ──────────────────────────────────────────── */
+.ad-zoom-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 6500;
+  background: rgba(8, 7, 6, 0.96);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.ad-zoom-modal.open {
+  opacity: 1;
+  visibility: visible;
+}
+.ad-zoom-close {
+  position: absolute;
+  top: 20px;
+  right: 22px;
+  z-index: 10;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: rgba(255,255,255,0.80);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.22s, color 0.22s;
+}
+.ad-zoom-close:hover { background: rgba(255,255,255,0.22); color: #fff; }
+
+.ad-zoom-stage {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: zoom-in;
+  touch-action: none;
+}
+.ad-zoom-img {
+  width: min(78vw, 620px);
+  height: min(84vh, 820px);
+  flex-shrink: 0;
+  background-size: cover;
+  background-position: center top;
+  filter: grayscale(1);
+  transform-origin: center center;
+  will-change: transform;
+  user-select: none;
+  pointer-events: none;
+}
+.ad-zoom-hint {
+  position: absolute;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Avenir', 'Avenir Next', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.30);
+  white-space: nowrap;
+  pointer-events: none;
+  transition: opacity 1.2s ease;
+}
+@media (max-width: 599px) {
+  .ad-zoom-img {
+    width: 92vw;
+    height: min(80vh, 680px);
+  }
+  .ad-zoom-hint { font-size: 0.58rem; letter-spacing: 0.12em; }
 }
 
 /* ── Hero text (centered below image, fades out on scroll) ── */
