@@ -1938,3 +1938,181 @@ body.cursor-hover .cursor-follower {
   .about-name { font-size: 2.6rem; }
   .about-quote { font-size: 1.15rem; }
 }
+
+/* ── Contact Overlay ──────────────────────────────────────── */
+.contact-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 850;
+  background: var(--bg);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.55s ease, visibility 0.55s ease;
+  overflow: hidden;
+}
+.contact-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.contact-scroll {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-top: 88px;
+}
+
+/* Two-column layout */
+.contact-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(40px, 6vw, 90px);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: clamp(48px, 7vw, 90px) clamp(24px, 5vw, 80px) 100px;
+  min-height: calc(100vh - 88px);
+}
+
+/* Left: two tall portrait images side by side */
+.contact-images {
+  display: flex;
+  gap: 12px;
+  flex-shrink: 0;
+  align-self: flex-start;
+  position: sticky;
+  top: 24px;
+}
+.contact-img-wrap {
+  width: clamp(130px, 14vw, 210px);
+  height: clamp(380px, 52vw, 640px);
+  overflow: hidden;
+}
+.contact-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  filter: grayscale(1) brightness(0.55);
+  display: block;
+}
+
+/* Right: text content */
+.contact-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.contact-heading {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 5vw, 3.8rem);
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--text);
+  margin: 0 0 28px;
+}
+
+.contact-intro {
+  font-family: var(--font-sans);
+  font-size: clamp(0.82rem, 1.3vw, 0.95rem);
+  font-weight: 300;
+  line-height: 1.75;
+  color: var(--text-muted);
+  margin: 0 0 14px;
+  max-width: 580px;
+}
+
+/* 2×2 contact grid */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px 40px;
+  margin: 36px 0 48px;
+  max-width: 580px;
+}
+.contact-label {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  letter-spacing: 0.10em;
+  color: var(--text-faint);
+  margin-bottom: 6px;
+}
+.contact-val {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: clamp(0.82rem, 1.2vw, 0.92rem);
+  font-weight: 400;
+  color: var(--text);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.contact-val:hover { color: #4A1E28; }
+
+/* Collector inquiries */
+.contact-sub-heading {
+  font-family: var(--font-serif);
+  font-size: clamp(1.3rem, 2.5vw, 2rem);
+  font-weight: 400;
+  color: var(--text);
+  margin: 0 0 16px;
+}
+.contact-body {
+  font-family: var(--font-sans);
+  font-size: clamp(0.82rem, 1.2vw, 0.92rem);
+  font-weight: 300;
+  line-height: 1.75;
+  color: var(--text-muted);
+  margin: 0 0 12px;
+  max-width: 580px;
+}
+.contact-list {
+  list-style: none;
+  margin: 8px 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.contact-list li {
+  font-family: var(--font-sans);
+  font-size: clamp(0.82rem, 1.2vw, 0.92rem);
+  font-weight: 300;
+  color: var(--text-muted);
+  padding-left: 20px;
+  position: relative;
+}
+.contact-list li::before {
+  content: '•';
+  position: absolute;
+  left: 4px;
+  color: var(--text-faint);
+}
+
+/* Nav blend for contact overlay */
+.nav.contact-active {
+  background: rgba(248,245,239,0.97);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding-top: 18px;
+  padding-bottom: 18px;
+  border-color: var(--border);
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  .contact-layout {
+    flex-direction: column;
+  }
+  .contact-images {
+    position: static;
+    width: 100%;
+    justify-content: center;
+  }
+  .contact-img-wrap {
+    width: 44vw;
+    height: 56vw;
+  }
+  .contact-grid {
+    grid-template-columns: 1fr;
+  }
+}
