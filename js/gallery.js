@@ -454,7 +454,7 @@
       </div>`);
   }
 
-  function buildAdBody(art) {
+  function buildAdBody(art, currentIdx) {
     const specs = [
       ['Year', art.year], ['Medium', art.medium],
       ['Size', art.size], ['Shipping', 'Worldwide shipping available'],
@@ -463,6 +463,27 @@
         <span class="ad-spec__key">${k}</span>
         <span class="ad-spec__val">${v}</span>
       </div>`).join('');
+
+    const exploreCards = ARTWORKS
+      .map((a, i) => ({ a, i }))
+      .filter(({ i }) => i !== currentIdx)
+      .map(({ a, i }) => `
+        <div class="ad-explore-card" data-explore-idx="${i}"
+             tabindex="0" role="button" aria-label="View ${a.title}">
+          <div class="ad-explore-thumb artwork__placeholder ${a.css}"></div>
+          <div class="ad-explore-info">
+            <span class="ad-explore-num">${a.num}</span>
+            <span class="ad-explore-title">${a.title}</span>
+          </div>
+          <div class="ad-explore-hover" aria-hidden="true">
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none"
+                 stroke="currentColor" stroke-width="1.4"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <rect x="1" y="1" width="13" height="13" rx="1"/>
+            </svg>
+            <span>Open</span>
+          </div>
+        </div>`).join('');
 
     return `
       <h2 class="ad-body-heading">${art.title}</h2>
@@ -492,6 +513,12 @@
           <li>Secure international shipping</li>
           <li>Protective packaging suitable for collectors</li>
         </ul>
+      </div>
+      <div class="ad-explore">
+        <p class="ad-explore__label">Continue Exploring</p>
+        <div class="ad-explore-track" id="adExploreTrack">
+          ${exploreCards}
+        </div>
       </div>`;
   }
 
@@ -520,7 +547,7 @@
     document.getElementById('adTitle').textContent   = art.title;
     document.getElementById('adStNum').textContent   = art.num;
     document.getElementById('adStTitle').textContent = art.title;
-    adBody.innerHTML = buildAdBody(art);
+    adBody.innerHTML = buildAdBody(art, idx);
 
     const VW = window.innerWidth;
     const VH = window.innerHeight;
@@ -647,6 +674,45 @@
     /* Artwork detail — close button */
     document.addEventListener('click', e => {
       if (e.target.closest('#adClose')) closeArtworkDetail();
+    });
+
+    /* Continue Exploring — open another artwork (skip if track was dragged) */
+    document.addEventListener('click', e => {
+      const card = e.target.closest('.ad-explore-card');
+      if (!card) return;
+      const track = card.closest('#adExploreTrack');
+      if (track && track.dataset.dragging) { delete track.dataset.dragging; return; }
+      const eIdx = parseInt(card.dataset.exploreIdx, 10);
+      if (!isNaN(eIdx)) openArtworkDetail(eIdx);
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Enter') return;
+      const card = e.target.closest('.ad-explore-card');
+      if (!card) return;
+      const eIdx = parseInt(card.dataset.exploreIdx, 10);
+      if (!isNaN(eIdx)) openArtworkDetail(eIdx);
+    });
+
+    /* Continue Exploring — horizontal drag-to-scroll */
+    document.addEventListener('mousedown', e => {
+      const track = e.target.closest('#adExploreTrack');
+      if (!track) return;
+      let startX = e.pageX;
+      let scrollL = track.scrollLeft;
+      let dragging = false;
+      const onMove = mv => {
+        const dx = mv.pageX - startX;
+        if (!dragging && Math.abs(dx) > 4) dragging = true;
+        if (dragging) { track.scrollLeft = scrollL - dx; mv.preventDefault(); }
+      };
+      const onUp = () => {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+        if (dragging) track.dataset.dragging = '1';
+        else delete track.dataset.dragging;
+      };
+      document.addEventListener('mousemove', onMove, { passive: false });
+      document.addEventListener('mouseup', onUp);
     });
 
     document.addEventListener('keydown', e => {

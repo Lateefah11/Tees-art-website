@@ -554,6 +554,123 @@
   line-height: 1.6;
 }
 
+/* ── Continue Exploring ──────────────────────────────────── */
+.ad-explore {
+  margin-top: 64px;
+  padding-top: 28px;
+  border-top: 1px solid rgba(60,55,50,0.10);
+  padding-bottom: 60px;
+}
+.ad-explore__label {
+  font-family: 'Avenir', 'Avenir Next', 'Century Gothic', sans-serif;
+  font-size: 0.70rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(40,36,30,0.45);
+  margin: 0 0 20px;
+}
+.ad-explore-track {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  cursor: grab;
+  user-select: none;
+  padding-bottom: 4px;
+}
+.ad-explore-track:active { cursor: grabbing; }
+.ad-explore-track::-webkit-scrollbar { display: none; }
+
+.ad-explore-card {
+  flex: 0 0 220px;
+  scroll-snap-align: start;
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.ad-explore-thumb {
+  width: 220px;
+  height: 290px;
+  display: block;
+  background-size: cover;
+  background-position: center top;
+  filter: grayscale(1);
+  transition: filter 0.5s ease, transform 0.5s ease;
+}
+.ad-explore-card:hover .ad-explore-thumb {
+  filter: grayscale(0.15);
+  transform: scale(1.03);
+}
+
+/* Dim overlay on hover */
+.ad-explore-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0);
+  transition: background 0.4s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+.ad-explore-card:hover::before { background: rgba(0,0,0,0.30); }
+
+/* Bottom info strip */
+.ad-explore-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px 12px;
+  background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 2;
+  pointer-events: none;
+}
+.ad-explore-num {
+  font-family: 'Avenir', 'Avenir Next', sans-serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.70);
+}
+.ad-explore-title {
+  font-family: 'Avenir', 'Avenir Next', sans-serif;
+  font-size: 0.72rem;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* "Open" hover cta */
+.ad-explore-hover {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) translateY(8px);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: rgba(255,255,255,0.92);
+  font-family: 'Avenir', 'Avenir Next', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.10em;
+  opacity: 0;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  z-index: 3;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.ad-explore-card:hover .ad-explore-hover {
+  opacity: 1;
+  transform: translate(-50%, -50%) translateY(0);
+}
+
 /* ── Mobile — linear block layout, no GSAP animation ─────── */
 .ad-overlay.ad-mobile {
   overflow-y: scroll;
@@ -681,6 +798,10 @@
   .ge-item:hover .ge-art {
     filter: grayscale(1);
   }
+
+  /* Continue Exploring — smaller cards on mobile */
+  .ad-explore-card { flex: 0 0 160px; }
+  .ad-explore-thumb { width: 160px; height: 210px; }
 }
 
 /* ─── Very small screens  (< 380px) ─────────────────────── */
