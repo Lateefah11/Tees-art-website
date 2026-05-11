@@ -286,7 +286,7 @@ body.cursor-hover .cursor-follower {
   position: fixed;
   inset: 0;
   background: var(--bg);
-  z-index: 790;
+  z-index: 920;
   display: flex;
   flex-direction: column;
   align-items: center;
