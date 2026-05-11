@@ -471,7 +471,7 @@
 .ad-spec__key {
   font-family: 'Avenir', 'Avenir Next', sans-serif;
   font-size: 0.75rem;
-  color: rgba(40,36,30,0.45);
+  color: rgba(40,36,30,0.70);
   flex-shrink: 0;
 }
 .ad-spec__key em { font-style: normal; font-size: 0.68rem; }
@@ -488,7 +488,7 @@
   display: block;
   width: 100%;
   max-width: 300px;
-  margin: 28px 0 8px;
+  margin: 28px auto 8px;
   padding: 16px 24px;
   background: #111;
   color: #F5F3EE;
@@ -496,6 +496,7 @@
   font-size: 0.78rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+  text-align: center;
   border: none;
   cursor: pointer;
   transition: background 0.25s;
@@ -504,9 +505,10 @@
 .ad-acquire-note {
   font-family: 'Avenir', 'Avenir Next', sans-serif;
   font-size: 0.68rem;
-  color: rgba(40,36,30,0.40);
+  color: rgba(40,36,30,0.60);
   margin: 0 0 52px;
   font-style: italic;
+  text-align: center;
 }
 
 /* Story + Collectors */
