@@ -222,24 +222,22 @@
             <p class="gallery-end-hint__line2">Click any artwork to view in full detail</p>
           </div>
 
-          <!-- Spotify ambient player -->
+          <!-- Ambient music toggle -->
           <div class="gallery-music" id="galleryMusic">
             <button class="gallery-music__toggle" id="galleryMusicToggle"
-                    aria-label="Toggle music player" aria-expanded="false">
+                    aria-label="Toggle music" aria-pressed="false">
               <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                 <path d="M9 3v12.26A4 4 0 1 0 11 19V8h5V3H9z"/>
               </svg>
             </button>
-            <div class="gallery-music__player" id="galleryMusicPlayer" aria-hidden="true">
-              <iframe
-                id="spotifyFrame"
-                src="https://open.spotify.com/embed/track/0E4hFnEC0U8t4gxEAX8X3Y?utm_source=generator&theme=0"
-                width="100%" height="80"
-                frameborder="0"
-                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                loading="lazy">
-              </iframe>
-            </div>
+            <!-- Hidden iframe — audio only, off-screen -->
+            <iframe id="spotifyFrame"
+              src="https://open.spotify.com/embed/track/0E4hFnEC0U8t4gxEAX8X3Y?utm_source=generator&theme=0&autoplay=1"
+              width="280" height="80"
+              frameborder="0"
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+              class="gallery-music__iframe">
+            </iframe>
           </div>
         </div>
 
@@ -401,11 +399,15 @@
       { opacity: 1, y: '-=6', duration: 0.5, ease: 'power2.out', stagger: 0.04,
         onComplete() { ScrollTrigger.refresh(); updateHUD(0, 0, 0); } }
     );
+
+    /* Auto-play music — user has just interacted (clicked CTA) so browser allows it */
+    setTimeout(() => setMusicPlaying(true), 800);
   }
 
   function closeGallery() {
     if (!isOpen) return;
     isOpen = false;
+    setMusicPlaying(false);
 
     gsap.to(overlay, {
       opacity: 0, duration: 0.4, ease: 'power2.in',
@@ -683,16 +685,41 @@
   }
 
   /* ── Music player toggle ────────────────────────────────── */
+  let musicPlaying = false;
+
+  function sendSpotify(cmd) {
+    const frame = document.getElementById('spotifyFrame');
+    if (frame && frame.contentWindow) {
+      frame.contentWindow.postMessage({ command: cmd }, '*');
+    }
+  }
+
+  function setMusicPlaying(playing) {
+    musicPlaying = playing;
+    const toggle = document.getElementById('galleryMusicToggle');
+    if (toggle) {
+      toggle.classList.toggle('active', playing);
+      toggle.setAttribute('aria-pressed', playing ? 'true' : 'false');
+    }
+    sendSpotify(playing ? 'play' : 'pause');
+  }
+
   function initMusicPlayer() {
     const toggle = document.getElementById('galleryMusicToggle');
-    const player = document.getElementById('galleryMusicPlayer');
-    if (!toggle || !player) return;
+    if (!toggle) return;
 
-    toggle.addEventListener('click', () => {
-      const open = player.classList.toggle('open');
-      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-      toggle.classList.toggle('active', open);
-      player.setAttribute('aria-hidden', open ? 'false' : 'true');
+    toggle.addEventListener('click', () => setMusicPlaying(!musicPlaying));
+
+    /* Listen for Spotify playback state changes */
+    window.addEventListener('message', e => {
+      if (!e.data || typeof e.data !== 'object') return;
+      const { type, payload } = e.data;
+      if (type === 'playback_update') {
+        const playing = payload && !payload.isPaused;
+        musicPlaying = playing;
+        toggle.classList.toggle('active', playing);
+        toggle.setAttribute('aria-pressed', playing ? 'true' : 'false');
+      }
     });
   }
 

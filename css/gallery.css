@@ -228,24 +228,13 @@
   color: #F0EDE6;
   border-color: transparent;
 }
-.gallery-music__player {
-  width: 280px;
-  border-radius: 12px;
-  overflow: hidden;
+/* Spotify iframe — loaded off-screen so audio works, never visible */
+.gallery-music__iframe {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
   opacity: 0;
-  transform: translateY(8px) scale(0.97);
   pointer-events: none;
-  transition: opacity 0.28s ease, transform 0.28s ease;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-}
-.gallery-music__player.open {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-  pointer-events: all;
-}
-.gallery-music__player iframe {
-  display: block;
-  border-radius: 12px;
 }
 
 /* ─── End-of-collection hint ─────────────────────────────── */
