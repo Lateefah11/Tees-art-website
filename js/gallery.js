@@ -21,6 +21,11 @@
   /* ─── Artwork data ─────────────────────────────────────── */
   const ARTWORKS = [
     { num:'01', css:'piece-01',
+      images:[
+        'https://picsum.photos/seed/tee01a/800/1200?grayscale',
+        'https://picsum.photos/seed/tee01b/800/1200?grayscale',
+        'https://picsum.photos/seed/tee01c/800/1200?grayscale',
+      ],
       title:'The Weight of a Held Breath',
       year:'2025', medium:'Mixed media on canvas', size:'90 × 120 cm',
       price:{ original:'$2,800', print:'$750' },
@@ -30,6 +35,11 @@
         'To hold one\'s breath is to exist in a liminal space between what is felt and what is shown. This work invites the viewer to sit in that tension.',
       ]},
     { num:'02', css:'piece-02',
+      images:[
+        'https://picsum.photos/seed/tee02a/800/1200?grayscale',
+        'https://picsum.photos/seed/tee02b/800/1200?grayscale',
+        'https://picsum.photos/seed/tee02c/800/1200?grayscale',
+      ],
       title:'Unnamed Grief',
       year:'2025', medium:'Acrylic on linen', size:'80 × 100 cm',
       price:{ original:'$2,200', print:'$600' },
@@ -39,6 +49,11 @@
         'This work was made during a period of quiet devastation. It does not ask to be understood — only witnessed.',
       ]},
     { num:'03', css:'piece-03',
+      images:[
+        'https://picsum.photos/seed/tee03a/800/1200?grayscale',
+        'https://picsum.photos/seed/tee03b/800/1200?grayscale',
+        'https://picsum.photos/seed/tee03c/800/1200?grayscale',
+      ],
       title:'Portrait of Stillness',
       year:'2024', medium:'Oil on canvas', size:'100 × 100 cm',
       price:{ original:'$3,200', print:'$850' },
@@ -48,6 +63,11 @@
         'Oil allows time to be embedded in the surface. Each layer dried before the next was applied — patience made visible.',
       ]},
     { num:'04', css:'piece-04',
+      images:[
+        'https://picsum.photos/seed/tee04a/800/1200?grayscale',
+        'https://picsum.photos/seed/tee04b/800/1200?grayscale',
+        'https://picsum.photos/seed/tee04c/800/1200?grayscale',
+      ],
       title:'Where Language Fails',
       year:'2025', medium:'Watercolour & ink', size:'70 × 90 cm',
       price:{ original:'$1,800', print:'$500' },
@@ -57,6 +77,11 @@
         'What remains is not what was planned, but what was true.',
       ]},
     { num:'05', css:'piece-05',
+      images:[
+        'https://picsum.photos/seed/tee05a/800/1200?grayscale',
+        'https://picsum.photos/seed/tee05b/800/1200?grayscale',
+        'https://picsum.photos/seed/tee05c/800/1200?grayscale',
+      ],
       title:'The Quietest Scream',
       year:'2025', medium:'Acrylic on panel', size:'120 × 150 cm',
       price:{ original:'$3,800', print:'$950' },
@@ -66,6 +91,11 @@
         'The silence in the image is not absence. It is a sound at a frequency others cannot register.',
       ]},
     { num:'06', css:'piece-06',
+      images:[
+        'https://picsum.photos/seed/tee06a/800/1200?grayscale',
+        'https://picsum.photos/seed/tee06b/800/1200?grayscale',
+        'https://picsum.photos/seed/tee06c/800/1200?grayscale',
+      ],
       title:'Residue',
       year:'2024', medium:'Mixed media on paper', size:'60 × 80 cm',
       price:{ original:'$1,600', print:'$450' },
@@ -75,6 +105,11 @@
         'Residue is not failure. It is proof that something happened here.',
       ]},
     { num:'07', css:'piece-07',
+      images:[
+        'https://picsum.photos/seed/tee07a/800/1200?grayscale',
+        'https://picsum.photos/seed/tee07b/800/1200?grayscale',
+        'https://picsum.photos/seed/tee07c/800/1200?grayscale',
+      ],
       title:'I Know This Feeling',
       year:'2025', medium:'Oil on canvas', size:'80 × 120 cm',
       price:{ original:'$2,600', print:'$700' },
@@ -84,6 +119,11 @@
         'The title is a statement, not a question. There is no ambiguity in recognition.',
       ]},
     { num:'08', css:'piece-08',
+      images:[
+        'https://picsum.photos/seed/tee08a/800/1200?grayscale',
+        'https://picsum.photos/seed/tee08b/800/1200?grayscale',
+        'https://picsum.photos/seed/tee08c/800/1200?grayscale',
+      ],
       title:'Dissolve',
       year:'2025', medium:'Acrylic & resin', size:'100 × 130 cm',
       price:{ original:'$3,400', print:'$900' },
@@ -93,6 +133,11 @@
         'There is something clarifying about dissolution. What remains when form is released is only what was always essential.',
       ]},
     { num:'09', css:'piece-09',
+      images:[
+        'https://picsum.photos/seed/tee09a/800/1200?grayscale',
+        'https://picsum.photos/seed/tee09b/800/1200?grayscale',
+        'https://picsum.photos/seed/tee09c/800/1200?grayscale',
+      ],
       title:'After All of It',
       year:'2025', medium:'Mixed media on canvas', size:'90 × 120 cm',
       price:{ original:'$2,800', print:'$750' },
@@ -428,8 +473,15 @@
           <span>Back</span>
         </button>
 
-        <!-- THE single artwork image — GSAP moves this from hero → sidebar -->
-        <div class="ad-img artwork__placeholder" id="adImg" role="img" aria-label=""></div>
+        <!-- GSAP moves this wrapper; face + thumbnails travel together -->
+        <div id="adImgWrap" class="ad-img-wrap">
+          <div class="ad-img-face" id="adImgFace" role="img" aria-label=""></div>
+          <div class="ad-thumbs" id="adThumbs">
+            <div class="ad-thumb active" data-thumb="0"></div>
+            <div class="ad-thumb" data-thumb="1"></div>
+            <div class="ad-thumb" data-thumb="2"></div>
+          </div>
+        </div>
 
         <!-- Hero text: number + title + scroll cue (fades out on scroll) -->
         <div class="ad-hero-text" id="adHeroText">
@@ -534,7 +586,9 @@
   function openArtworkDetail(idx) {
     const art           = ARTWORKS[idx];
     const detEl         = document.getElementById('artworkDetail');
-    const adImg         = document.getElementById('adImg');
+    const adImgWrap     = document.getElementById('adImgWrap');
+    const adImgFace     = document.getElementById('adImgFace');
+    const adThumbs      = document.getElementById('adThumbs');
     const adHeroText    = document.getElementById('adHeroText');
     const adSidebarText = document.getElementById('adSidebarText');
     const adScroller    = document.getElementById('adScroller');
@@ -550,13 +604,32 @@
     }
 
     /* Populate content */
-    adImg.className = `ad-img artwork__placeholder ${art.css}`;
-    adImg.setAttribute('aria-label', art.title);
+    adImgFace.setAttribute('aria-label', art.title);
+    adImgFace.style.backgroundImage = `url('${art.images[0]}')`;
     document.getElementById('adNum').textContent     = art.num;
     document.getElementById('adTitle').textContent   = art.title;
     document.getElementById('adStNum').textContent   = art.num;
     document.getElementById('adStTitle').textContent = art.title;
     adBody.innerHTML = buildAdBody(art, idx);
+
+    /* Populate thumbnails */
+    const thumbEls = adThumbs.querySelectorAll('.ad-thumb');
+    thumbEls.forEach((thumb, i) => {
+      thumb.style.backgroundImage = `url('${art.images[i]}')`;
+      thumb.classList.toggle('active', i === 0);
+    });
+
+    /* Thumbnail click — swap main image + active state */
+    if (adThumbs._listener) adThumbs.removeEventListener('click', adThumbs._listener);
+    adThumbs._listener = e => {
+      const thumb = e.target.closest('.ad-thumb');
+      if (!thumb) return;
+      const i = parseInt(thumb.dataset.thumb, 10);
+      adImgFace.style.backgroundImage = `url('${art.images[i]}')`;
+      thumbEls.forEach(t => t.classList.remove('active'));
+      thumb.classList.add('active');
+    };
+    adThumbs.addEventListener('click', adThumbs._listener);
 
     const VW = window.innerWidth;
     const VH = window.innerHeight;
@@ -567,7 +640,7 @@
     if (VW < 600) {
       /* ── Mobile: static layout, no animation ── */
       detEl.classList.add('ad-mobile');
-      gsap.set([adImg, adHeroText, adSidebarText], { clearProps: 'all' });
+      gsap.set([adImgWrap, adImgFace, adHeroText, adSidebarText], { clearProps: 'all' });
       adBody.style.paddingLeft = '';
 
     } else {
@@ -596,15 +669,15 @@
       adBody.style.paddingLeft = bodyPadL + 'px';
 
       // Clear any previous inline styles from GSAP before setting fresh ones
-      gsap.set([adImg, adHeroText, adSidebarText], { clearProps: 'all' });
-      gsap.set(adImg,         { left: heroLeft, top: heroTop, width: heroW, height: heroH });
+      gsap.set([adImgWrap, adImgFace, adHeroText, adSidebarText], { clearProps: 'all' });
+      gsap.set(adImgWrap,     { left: heroLeft, top: heroTop, width: heroW, height: heroH });
       gsap.set(adHeroText,    { left: '50%',    top: htTop,   xPercent: -50, opacity: 1 });
       gsap.set(adSidebarText, { left: sideLeft, top: stTop,   width: sideW,  opacity: 0 });
 
       // Paused timeline — scrubbed by ScrollTrigger below
       adTl = gsap.timeline({ paused: true });
       adTl
-        .to(adImg, {
+        .to(adImgWrap, {
           left: sideLeft, top: sideTop, width: sideW, height: sideH,
           ease: 'power2.inOut', duration: 1,
         }, 0)
@@ -690,11 +763,11 @@
     }
 
     function openZoom() {
-      const adImg = document.getElementById('adImg');
-      if (!adImg) return;
-      const pieceClass = [...adImg.classList].find(c => c.startsWith('piece-')) || '';
+      const face = document.getElementById('adImgFace');
+      if (!face) return;
       scale = 1; panX = 0; panY = 0;
-      zoomImg.className = `ad-zoom-img artwork__placeholder ${pieceClass}`;
+      zoomImg.className = 'ad-zoom-img';
+      zoomImg.style.backgroundImage = face.style.backgroundImage;
       applyTransform(false);
       modal.classList.add('open');
       modal.setAttribute('aria-hidden', 'false');
@@ -706,13 +779,13 @@
       modal.setAttribute('aria-hidden', 'true');
     }
 
-    /* Open on ad-img click — forward scroll to scroller so it still works */
-    const adImg = document.getElementById('adImg');
-    if (adImg) {
-      adImg.style.pointerEvents = 'auto';
-      adImg.style.cursor = 'zoom-in';
-      adImg.addEventListener('click', openZoom);
-      adImg.addEventListener('wheel', e => {
+    /* Open on ad-img-face click — forward scroll to scroller so it still works */
+    const adImgFace = document.getElementById('adImgFace');
+    if (adImgFace) {
+      adImgFace.style.pointerEvents = 'auto';
+      adImgFace.style.cursor = 'zoom-in';
+      adImgFace.addEventListener('click', openZoom);
+      adImgFace.addEventListener('wheel', e => {
         const scroller = document.getElementById('adScroller');
         if (scroller) scroller.scrollTop += e.deltaY;
       }, { passive: true });
