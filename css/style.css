@@ -1984,7 +1984,7 @@ body.cursor-hover .cursor-follower {
   top: 24px;
 }
 .contact-img-wrap {
-  width: clamp(130px, 14vw, 210px);
+  width: clamp(260px, 28vw, 420px);
   height: clamp(380px, 52vw, 640px);
   overflow: hidden;
 }
