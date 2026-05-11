@@ -192,7 +192,7 @@ body.cursor-hover .cursor-follower {
 .nav {
   position: fixed;
   top: 0; left: 0; right: 0;
-  z-index: 800;
+  z-index: 870;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -201,8 +201,9 @@ body.cursor-hover .cursor-follower {
   border-bottom: 1px solid transparent;
 }
 
-.nav.scrolled {
-  background: rgba(248,245,239,0.94);
+.nav.scrolled,
+.nav.about-active {
+  background: rgba(248,245,239,0.97);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   padding-top: 18px;
@@ -1841,6 +1842,7 @@ body.cursor-hover .cursor-follower {
   inset: 0;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  padding-top: 88px; /* clear the fixed nav */
 }
 
 /* Centred content column */

@@ -308,10 +308,10 @@
   /* ── Init All ────────────────────────────────────────────── */
   /* ── About Artist Overlay ───────────────────────────────── */
   function initAbout() {
-    const overlay     = qs('#aboutOverlay');
-    const closeBtn    = qs('#aboutClose');
-    const navLink     = qs('#aboutNavLink');
-    const mobileLink  = qs('#aboutMobileLink');
+    const overlay    = qs('#aboutOverlay');
+    const navLink    = qs('#aboutNavLink');
+    const mobileLink = qs('#aboutMobileLink');
+    const nav        = qs('#mainNav');
     if (!overlay) return;
 
     function openAbout(e) {
@@ -319,6 +319,7 @@
       overlay.classList.add('open');
       overlay.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
+      nav?.classList.add('about-active');
       // close mobile menu if open
       qs('#mobileMenu')?.classList.remove('open');
       qs('#hamburger')?.classList.remove('open');
@@ -329,11 +330,25 @@
       overlay.classList.remove('open');
       overlay.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
+      nav?.classList.remove('about-active');
     }
 
     if (navLink)    navLink.addEventListener('click', openAbout);
     if (mobileLink) mobileLink.addEventListener('click', openAbout);
-    if (closeBtn)   closeBtn.addEventListener('click', closeAbout);
+
+    // Close when any other nav link is clicked
+    qsa('.nav__link, .mobile-menu__link').forEach(link => {
+      if (link !== navLink && link !== mobileLink) {
+        link.addEventListener('click', () => {
+          if (overlay.classList.contains('open')) closeAbout();
+        });
+      }
+    });
+
+    // Close on logo click
+    qs('.nav__logo a')?.addEventListener('click', () => {
+      if (overlay.classList.contains('open')) closeAbout();
+    });
 
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape' && overlay.classList.contains('open')) closeAbout();
