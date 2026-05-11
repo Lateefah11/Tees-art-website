@@ -1789,3 +1789,142 @@ body.cursor-hover .cursor-follower {
   background: var(--accent);
   border-radius: 2px;
 }
+
+/* ── About Artist Overlay ─────────────────────────────────── */
+.about-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 850;
+  background: #EDEAE3;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.55s ease, visibility 0.55s ease;
+  overflow: hidden;
+}
+
+.about-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Back button — same pill style as gallery */
+.about-close {
+  position: fixed;
+  top: 22px;
+  left: 22px;
+  z-index: 860;
+  height: 44px;
+  padding: 0 18px 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  background: rgba(237, 234, 227, 0.88);
+  border: 1px solid rgba(60, 55, 50, 0.18);
+  border-radius: 40px;
+  color: rgba(40, 36, 30, 0.75);
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: background 0.22s, color 0.22s, border-color 0.22s;
+  white-space: nowrap;
+}
+.about-close:hover { background: #111; color: #F5F3EE; border-color: #111; }
+.about-close__icon { font-size: 0.85rem; line-height: 1; }
+
+/* Scrollable area */
+.about-scroll {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Centred content column */
+.about-content {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: clamp(80px, 12vw, 140px) clamp(24px, 6vw, 60px) 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Artist name */
+.about-name {
+  font-family: var(--font-serif);
+  font-size: clamp(2.4rem, 7vw, 5rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+  color: var(--text);
+  margin: 0 0 28px;
+}
+
+/* Intro paragraph */
+.about-intro {
+  font-family: var(--font-sans);
+  font-size: clamp(0.82rem, 1.4vw, 0.95rem);
+  font-weight: 300;
+  line-height: 1.75;
+  color: var(--text-muted);
+  max-width: 520px;
+  margin: 0 0 52px;
+}
+
+/* Portrait */
+.about-portrait-wrap {
+  width: min(360px, 80vw);
+  margin: 0 0 72px;
+}
+.about-portrait {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: grayscale(1);
+  object-fit: cover;
+}
+
+/* Quote section */
+.about-quote-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.about-quote-mark {
+  font-family: Georgia, serif;
+  font-size: 5rem;
+  line-height: 1;
+  color: #4A1E28;
+  margin: 0 0 16px;
+  user-select: none;
+}
+
+.about-quote {
+  font-family: var(--font-sans);
+  font-size: clamp(1.25rem, 2.8vw, 2rem);
+  font-weight: 300;
+  line-height: 1.55;
+  color: var(--text);
+  max-width: 720px;
+  margin: 0 0 36px;
+  font-style: normal;
+}
+
+.about-quote-attr {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+@media (max-width: 600px) {
+  .about-name { font-size: 2.6rem; }
+  .about-quote { font-size: 1.15rem; }
+}

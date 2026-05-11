@@ -306,6 +306,40 @@
   }
 
   /* ── Init All ────────────────────────────────────────────── */
+  /* ── About Artist Overlay ───────────────────────────────── */
+  function initAbout() {
+    const overlay     = qs('#aboutOverlay');
+    const closeBtn    = qs('#aboutClose');
+    const navLink     = qs('#aboutNavLink');
+    const mobileLink  = qs('#aboutMobileLink');
+    if (!overlay) return;
+
+    function openAbout(e) {
+      if (e) e.preventDefault();
+      overlay.classList.add('open');
+      overlay.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      // close mobile menu if open
+      qs('#mobileMenu')?.classList.remove('open');
+      qs('#hamburger')?.classList.remove('open');
+      document.body.classList.remove('menu-open');
+    }
+
+    function closeAbout() {
+      overlay.classList.remove('open');
+      overlay.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    if (navLink)    navLink.addEventListener('click', openAbout);
+    if (mobileLink) mobileLink.addEventListener('click', openAbout);
+    if (closeBtn)   closeBtn.addEventListener('click', closeAbout);
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && overlay.classList.contains('open')) closeAbout();
+    });
+  }
+
   function init() {
     initPreloader();
     initCursor();
@@ -317,6 +351,7 @@
     initContactForm();
     initSmoothScroll();
     initParallax();
+    initAbout();
   }
 
   if (document.readyState === 'loading') {

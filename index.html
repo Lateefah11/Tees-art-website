@@ -38,7 +38,7 @@
     </div>
     <ul class="nav__links">
       <li><a href="#hero" class="nav__link">Exhibition</a></li>
-      <li><a href="#hero" class="nav__link">About Artist</a></li>
+      <li><a href="#hero" class="nav__link" id="aboutNavLink">About Artist</a></li>
       <li><a href="#hero" class="nav__link">Contact</a></li>
     </ul>
     <button class="nav__hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
@@ -52,7 +52,7 @@
     <button class="mobile-menu__close" id="mobileClose" aria-label="Close menu">&#x2715;</button>
     <ul class="mobile-menu__links">
       <li><a href="#hero" class="mobile-menu__link">Exhibition</a></li>
-      <li><a href="#hero" class="mobile-menu__link">About Artist</a></li>
+      <li><a href="#hero" class="mobile-menu__link" id="aboutMobileLink">About Artist</a></li>
       <li><a href="#hero" class="mobile-menu__link">Contact</a></li>
     </ul>
     <div class="mobile-menu__footer">
@@ -88,6 +88,41 @@
     </section>
 
   </main>
+
+  <!-- ─── About Artist Overlay ──────────────────────────────── -->
+  <div class="about-overlay" id="aboutOverlay" aria-hidden="true">
+
+    <button class="about-close" id="aboutClose" aria-label="Back">
+      <span class="about-close__icon">&#x2190;</span>
+      <span>Back</span>
+    </button>
+
+    <div class="about-scroll" id="aboutScroll">
+      <div class="about-content">
+
+        <h1 class="about-name">Lateefah<br>Abdulrahman</h1>
+
+        <p class="about-intro">Art that speaks in whispers often comes from a mind that observes deeply. Lateefah is a contemporary artist whose work explores emotional stillness, feminine presence, and the silent conversations that exist between souls.</p>
+
+        <div class="about-portrait-wrap">
+          <img
+            class="about-portrait"
+            src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=700&q=80"
+            alt="Lateefah Abdulrahman"
+          />
+        </div>
+
+        <div class="about-quote-section">
+          <div class="about-quote-mark">&ldquo;</div>
+          <blockquote class="about-quote">
+            Growing up surrounded by the layered realities of human experience, she developed a fascination with the emotions people rarely speak about. Loneliness in a crowded room. Strength hidden behind calm eyes. The tension between vulnerability and control.
+          </blockquote>
+          <p class="about-quote-attr">A practice shaped by feeling, restraint, and observation</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
 
   <!-- Three.js must load before hills.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
