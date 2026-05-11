@@ -2116,3 +2116,120 @@ body.cursor-hover .cursor-follower {
     grid-template-columns: 1fr;
   }
 }
+
+/* ── The Process Overlay ──────────────────────────────────── */
+.process-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 850;
+  background: #000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.55s ease, visibility 0.55s ease;
+}
+.process-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Full-bleed video/image container */
+.process-video-wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.process-poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  filter: grayscale(1);
+  display: block;
+}
+
+/* Centered play button */
+.process-play-btn {
+  position: relative;
+  z-index: 10;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.22s ease, background 0.22s ease;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.35);
+}
+.process-play-btn svg {
+  width: 22px;
+  height: 22px;
+  color: #111;
+  margin-left: 4px;
+}
+.process-play-btn:hover {
+  transform: scale(1.1);
+  background: #fff;
+}
+
+/* Nav over process — transparent with white text for dark background */
+.nav.process-active {
+  background: transparent;
+  border-color: transparent;
+}
+.nav.process-active .nav__logo a,
+.nav.process-active .nav__link {
+  color: rgba(255,255,255,0.85);
+}
+.nav.process-active .nav__link:hover { color: #fff; }
+.nav.process-active .nav__hamburger span { background: #fff; }
+
+@media (max-width: 600px) {
+  .process-play-btn { width: 60px; height: 60px; }
+  .process-play-btn svg { width: 18px; height: 18px; }
+}
+
+/* ── Mobile: About overlay ────────────────────────────────── */
+@media (max-width: 600px) {
+  .about-content {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .about-portrait-wrap {
+    width: 80vw;
+  }
+  .about-intro {
+    max-width: 100%;
+  }
+}
+
+/* ── Mobile: Contact overlay ──────────────────────────────── */
+@media (max-width: 600px) {
+  .contact-layout {
+    flex-direction: column;
+    gap: 32px;
+  }
+  .contact-images {
+    position: static;
+    width: 100%;
+    justify-content: center;
+  }
+  .contact-img-wrap {
+    width: 42vw;
+    height: 54vw;
+  }
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .contact-heading {
+    font-size: 2.2rem;
+  }
+}

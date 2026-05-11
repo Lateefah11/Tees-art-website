@@ -355,6 +355,52 @@
     });
   }
 
+  /* ── The Process Overlay ────────────────────────────────── */
+  function initProcess() {
+    const overlay    = qs('#processOverlay');
+    const navLink    = qs('#processNavLink');
+    const mobileLink = qs('#processMobileLink');
+    const nav        = qs('#mainNav');
+    if (!overlay) return;
+
+    function openProcess(e) {
+      if (e) e.preventDefault();
+      overlay.classList.add('open');
+      overlay.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      nav?.classList.add('process-active');
+      qs('#mobileMenu')?.classList.remove('open');
+      qs('#hamburger')?.classList.remove('open');
+      document.body.classList.remove('menu-open');
+    }
+
+    function closeProcess() {
+      overlay.classList.remove('open');
+      overlay.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      nav?.classList.remove('process-active');
+    }
+
+    if (navLink)    navLink.addEventListener('click', openProcess);
+    if (mobileLink) mobileLink.addEventListener('click', openProcess);
+
+    qsa('.nav__link, .mobile-menu__link').forEach(link => {
+      if (link !== navLink && link !== mobileLink) {
+        link.addEventListener('click', () => {
+          if (overlay.classList.contains('open')) closeProcess();
+        });
+      }
+    });
+
+    qs('.nav__logo a')?.addEventListener('click', () => {
+      if (overlay.classList.contains('open')) closeProcess();
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && overlay.classList.contains('open')) closeProcess();
+    });
+  }
+
   /* ── Contact Overlay ────────────────────────────────────── */
   function initContact() {
     const overlay    = qs('#contactOverlay');
