@@ -2179,17 +2179,11 @@ body.cursor-hover .cursor-follower {
   background: #fff;
 }
 
-/* Nav over process — transparent with white text for dark background */
+/* Nav over process — cream background matching About/Contact */
 .nav.process-active {
-  background: transparent;
-  border-color: transparent;
+  background: rgba(237,234,227,1);
+  border-color: rgba(0,0,0,0.08);
 }
-.nav.process-active .nav__logo a,
-.nav.process-active .nav__link {
-  color: rgba(255,255,255,0.85);
-}
-.nav.process-active .nav__link:hover { color: #fff; }
-.nav.process-active .nav__hamburger span { background: #fff; }
 
 @media (max-width: 600px) {
   .process-play-btn { width: 60px; height: 60px; }

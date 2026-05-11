@@ -459,6 +459,7 @@
     initSmoothScroll();
     initParallax();
     initAbout();
+    initProcess();
     initContact();
   }
 
