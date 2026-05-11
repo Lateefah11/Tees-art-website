@@ -129,13 +129,16 @@
   font-size: 0.60rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(240, 237, 230, 0.70);
+  color: #ffffff;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.7);
 }
 .ge-title-label {
   font-family: 'Avenir', 'Avenir Next', 'Century Gothic', 'Trebuchet MS', sans-serif;
-  font-size: 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 500;
   letter-spacing: 0.06em;
-  color: rgba(240, 237, 230, 0.85);
+  color: #ffffff;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.75);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -184,19 +187,7 @@
 
 /* ─── Current artwork label (bottom-left) ────────────────── */
 .gallery-label {
-  position: absolute;
-  bottom: 26px;
-  left: 32px;
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 0.75rem;
-  letter-spacing: 0.20em;
-  text-transform: uppercase;
-  color: rgba(40, 36, 30, 0.45);
-  pointer-events: none;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 480px;
+  display: none;
 }
 
 /* ─── End-of-collection hint ─────────────────────────────── */
