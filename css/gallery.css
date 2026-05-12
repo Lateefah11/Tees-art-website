@@ -696,42 +696,40 @@
   letter-spacing: 0.26em;
   text-transform: uppercase;
   color: rgba(40,36,30,0.45);
-  margin: 0 0 20px;
+  margin: 0 0 0px;
 }
 .ad-explore-track {
   display: flex;
-  gap: 12px;
+  gap: 0;                     /* flush — no gaps like gallery */
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   cursor: grab;
   user-select: none;
-  padding-bottom: 4px;
 }
 .ad-explore-track:active { cursor: grabbing; }
 .ad-explore-track::-webkit-scrollbar { display: none; }
 
 .ad-explore-card {
-  flex: 0 0 220px;
+  flex: 0 0 clamp(260px, 32vw, 460px);
   scroll-snap-align: start;
   position: relative;
   overflow: hidden;
-  border-radius: 4px;
+  border-radius: 0;           /* flush, no rounded corners */
   cursor: pointer;
 }
 .ad-explore-thumb {
-  width: 220px;
-  height: 290px;
+  width: 100%;
+  height: clamp(360px, 55vh, 580px);
   display: block;
   background-size: cover;
   background-position: center top;
   filter: grayscale(1);
-  transition: filter 0.5s ease, transform 0.5s ease;
+  transition: filter 0.5s ease;
 }
 .ad-explore-card:hover .ad-explore-thumb {
   filter: grayscale(0.15);
-  transform: scale(1.03);
 }
 
 /* Dim overlay on hover */
@@ -929,8 +927,8 @@
   }
 
   /* Continue Exploring — smaller cards on mobile */
-  .ad-explore-card { flex: 0 0 160px; }
-  .ad-explore-thumb { width: 160px; height: 210px; }
+  .ad-explore-card { flex: 0 0 75vw; }
+  .ad-explore-thumb { height: clamp(260px, 48vh, 400px); }
 }
 
 /* ─── Very small screens  (< 380px) ─────────────────────── */
