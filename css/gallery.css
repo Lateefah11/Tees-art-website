@@ -110,7 +110,7 @@
   transition: filter 0.6s ease;
 }
 .ge-item:hover .ge-art {
-  filter: grayscale(0.2);
+  filter: grayscale(1);
 }
 
 /* ─── Artwork meta overlay ───────────────────────────────── */
@@ -397,6 +397,39 @@
 .ad-close:hover { background: #111; color: #F5F3EE; border-color: #111; }
 .ad-close__icon { font-size: 0.85rem; line-height: 1; }
 
+/* ── Hero block: invisible on desktop (children are abs-positioned)
+      becomes 100vh flex column on mobile                       */
+.ad-hero-block {
+  pointer-events: none; /* desktop: children escape via position:absolute */
+}
+
+/* ── Floating music toggle on detail page ─────────────────── */
+.ad-music-toggle {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 6100;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(60,55,50,0.25);
+  background: rgba(240,237,230,0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(40,36,30,0.50);
+  transition: background 0.25s, color 0.25s, border-color 0.25s;
+}
+.ad-music-toggle svg { width: 17px; height: 17px; }
+.ad-music-toggle.active {
+  background: #1E1B16;
+  color: #F0EDE6;
+  border-color: transparent;
+}
+
 /* ── THE single artwork image ────────────────────────────── */
 /* GSAP drives: left, top, width, height — nothing else here */
 /* pointer-events set to auto by JS so clicks open zoom       */
@@ -407,6 +440,7 @@
   filter: grayscale(1);
   background-size: cover;
   background-position: center;
+  transition: opacity 0.35s ease;
 }
 
 /* ── Zoom modal ──────────────────────────────────────────── */
@@ -502,12 +536,7 @@
   text-align: center;
 }
 .ad-hero-num {
-  font-family: 'Avenir', 'Avenir Next', sans-serif;
-  font-size: 0.60rem;
-  letter-spacing: 0.30em;
-  text-transform: uppercase;
-  color: rgba(40,36,30,0.40);
-  margin: 0;
+  display: none;
 }
 .ad-hero-title {
   font-family: 'Playfair Display SC', Georgia, serif;
@@ -540,20 +569,15 @@
   opacity: 0;
 }
 .ad-st-num {
-  font-family: 'Avenir', 'Avenir Next', sans-serif;
-  font-size: 0.58rem;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: rgba(40,36,30,0.40);
-  margin: 0 0 6px;
+  display: none;
 }
 .ad-st-title {
   font-family: 'Playfair Display SC', Georgia, serif;
-  font-size: 1rem;
+  font-size: clamp(1rem, 1.4vw, 1.35rem);
   font-weight: 400;
   color: #111;
   margin: 0;
-  line-height: 1.3;
+  line-height: 1.25;
 }
 
 /* ── Scroll container (under floating layers) ────────────── */
@@ -683,51 +707,66 @@
   line-height: 1.6;
 }
 
-/* ── Continue Exploring ──────────────────────────────────── */
-.ad-explore {
-  margin-top: 64px;
-  padding-top: 28px;
-  border-top: 1px solid rgba(60,55,50,0.10);
-  padding-bottom: 60px;
+/* ── Continue Exploring section (full-width, outside ad-body) */
+.ad-explore-section {
+  width: 100%;
+  background: #F0EDE6;
+  border-top: 1px solid rgba(60,55,50,0.08);
+  padding-bottom: 80px;
 }
 .ad-explore__label {
+  display: block;
   font-family: 'Avenir', 'Avenir Next', 'Century Gothic', sans-serif;
   font-size: 0.70rem;
   letter-spacing: 0.26em;
   text-transform: uppercase;
-  color: rgba(40,36,30,0.45);
-  margin: 0 0 0px;
+  color: rgba(40,36,30,0.72);
+  padding: 20px 28px 16px;
+  margin: 0;
 }
 .ad-explore-track {
   display: flex;
-  gap: 0;                     /* flush — no gaps like gallery */
+  align-items: flex-start;    /* enables P/L vertical stagger */
+  gap: 8px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   cursor: grab;
   user-select: none;
+  background: #F0EDE6;
 }
 .ad-explore-track:active { cursor: grabbing; }
 .ad-explore-track::-webkit-scrollbar { display: none; }
 
 .ad-explore-card {
-  flex: 0 0 clamp(260px, 32vw, 460px);
   scroll-snap-align: start;
   position: relative;
   overflow: hidden;
-  border-radius: 0;           /* flush, no rounded corners */
+  border-radius: 0;
   cursor: pointer;
+  flex-shrink: 0;
+}
+/* Portrait card — 28vw, matches gallery portrait columns */
+.ad-explore-card[data-type="P"] {
+  flex: 0 0 28vw;
+  margin-top: 5vh;
+}
+/* Landscape card — 44vw, matches gallery landscape columns */
+.ad-explore-card[data-type="L"] {
+  flex: 0 0 44vw;
+  margin-top: 7vh;
 }
 .ad-explore-thumb {
   width: 100%;
-  height: clamp(360px, 55vh, 580px);
   display: block;
   background-size: cover;
   background-position: center top;
   filter: grayscale(1);
   transition: filter 0.5s ease;
 }
+.ad-explore-card[data-type="P"] .ad-explore-thumb { height: 76vh; }
+.ad-explore-card[data-type="L"] .ad-explore-thumb { height: 72vh; }
 .ad-explore-card:hover .ad-explore-thumb {
   filter: grayscale(0.15);
 }
@@ -809,25 +848,38 @@
   height: auto;
 }
 .ad-overlay.ad-mobile .ad-hero-zone { display: none; }
+
+/* Hero block becomes a 100vh full-bleed hero on mobile */
+.ad-overlay.ad-mobile .ad-hero-block {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  pointer-events: auto;
+  padding: 16px 16px 0;
+  box-sizing: border-box;
+}
 .ad-overlay.ad-mobile .ad-img {
   position: relative !important;
   display: block;
   left: auto !important;
   top: auto !important;
-  width: 72% !important;
-  max-width: 280px;
-  aspect-ratio: 2 / 3;
-  max-height: 52vh;
+  width: 100% !important;
+  max-width: 100% !important;
   height: auto !important;
-  margin: 80px auto 0;
+  max-height: none !important;
+  aspect-ratio: unset !important;
+  margin: 0 !important;
+  flex: 1 1 0; /* fills the hero block minus the text row */
   pointer-events: auto;
 }
 .ad-overlay.ad-mobile .ad-hero-text {
   position: static !important;
   opacity: 1 !important;
   transform: none !important;
-  padding: 20px 24px 8px;
+  flex: 0 0 auto;
+  padding: 20px 24px 16px;
   align-items: center;
+  background: #F5F3EE;
 }
 .ad-overlay.ad-mobile .ad-sidebar-text { display: none !important; }
 .ad-overlay.ad-mobile .ad-body {
@@ -926,9 +978,20 @@
     filter: grayscale(1);
   }
 
-  /* Continue Exploring — smaller cards on mobile */
-  .ad-explore-card { flex: 0 0 75vw; }
-  .ad-explore-thumb { height: clamp(260px, 48vh, 400px); }
+  /* Body heading is already shown in the hero on mobile — hide the repeat */
+  .ad-body-heading { display: none; }
+
+
+  /* Continue Exploring — uniform cards on mobile, no stagger */
+  .ad-explore-card[data-type="P"],
+  .ad-explore-card[data-type="L"] {
+    flex: 0 0 75vw;
+    margin-top: 0;
+  }
+  .ad-explore-card[data-type="P"] .ad-explore-thumb,
+  .ad-explore-card[data-type="L"] .ad-explore-thumb {
+    height: clamp(260px, 48vh, 400px);
+  }
 }
 
 /* ─── Very small screens  (< 380px) ─────────────────────── */

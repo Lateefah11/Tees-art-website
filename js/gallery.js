@@ -162,7 +162,7 @@
   let phase1Tl = null, phase2Tl = null, st = null;
   let items    = [];
   let lastCfg  = null;
-  let adTl = null, adSt = null, adScrollerListener = null;
+  let adTl = null, adSt = null, adScrollerListener = null, adExploreFadeListener = null;
 
   /* ═══════════════════════════════════════════════════════════
      BUILD HTML
@@ -450,14 +450,18 @@
           <span>Back</span>
         </button>
 
-        <!-- THE single artwork image — GSAP moves this from hero → sidebar -->
-        <div class="ad-img artwork__placeholder" id="adImg" role="img" aria-label=""></div>
+        <!-- Hero block: desktop = transparent (children abs-positioned by GSAP)
+                        mobile  = 100vh flex column full-bleed hero -->
+        <div class="ad-hero-block" id="adHeroBlock">
+          <!-- THE single artwork image — GSAP moves this from hero → sidebar -->
+          <div class="ad-img artwork__placeholder" id="adImg" role="img" aria-label=""></div>
 
-        <!-- Hero text: number + title + scroll cue (fades out on scroll) -->
-        <div class="ad-hero-text" id="adHeroText">
-          <p class="ad-hero-num" id="adNum"></p>
-          <h1 class="ad-hero-title" id="adTitle"></h1>
-          <p class="ad-scroll-cue">Scroll to explore</p>
+          <!-- Hero text: number + title + scroll cue (fades out on scroll) -->
+          <div class="ad-hero-text" id="adHeroText">
+            <p class="ad-hero-num" id="adNum"></p>
+            <h1 class="ad-hero-title" id="adTitle"></h1>
+            <p class="ad-scroll-cue">Scroll to explore</p>
+          </div>
         </div>
 
         <!-- Sidebar text: number + title (fades in as image arrives at sidebar) -->
@@ -466,12 +470,22 @@
           <h2 class="ad-st-title" id="adStTitle"></h2>
         </div>
 
+        <!-- Floating music toggle — synced with gallery music state -->
+        <button class="ad-music-toggle" id="adMusicToggle"
+                aria-label="Toggle ambient music" aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 3v12.26A4 4 0 1 0 11 19V8h5V3H9z"/>
+          </svg>
+        </button>
+
         <!-- Scroll container — sits under the floating layers -->
         <div class="ad-scroller" id="adScroller">
           <!-- Empty zone whose scroll height drives the image animation -->
           <div class="ad-hero-zone" id="adHeroZone"></div>
           <!-- Right-side body content (padding-left set by JS) -->
           <div class="ad-body" id="adBody"></div>
+          <!-- Continue Exploring — full-width, outside body padding -->
+          <div class="ad-explore-section" id="adExploreSection"></div>
         </div>
 
         <!-- Image zoom modal -->
@@ -485,7 +499,7 @@
       </div>`);
   }
 
-  function buildAdBody(art, currentIdx) {
+  function buildAdBody(art) {
     const specs = [
       ['Year', art.year], ['Medium', art.medium],
       ['Size', art.size], ['Shipping', 'Worldwide shipping available'],
@@ -494,27 +508,6 @@
         <span class="ad-spec__key">${k}</span>
         <span class="ad-spec__val">${v}</span>
       </div>`).join('');
-
-    const exploreCards = ARTWORKS
-      .map((a, i) => ({ a, i }))
-      .filter(({ i }) => i !== currentIdx)
-      .map(({ a, i }) => `
-        <div class="ad-explore-card" data-explore-idx="${i}"
-             tabindex="0" role="button" aria-label="View ${a.title}">
-          <div class="ad-explore-thumb artwork__placeholder ${a.css}"></div>
-          <div class="ad-explore-info">
-            <span class="ad-explore-num">${a.num}</span>
-            <span class="ad-explore-title">${a.title}</span>
-          </div>
-          <div class="ad-explore-hover" aria-hidden="true">
-            <svg width="15" height="15" viewBox="0 0 15 15" fill="none"
-                 stroke="currentColor" stroke-width="1.4"
-                 stroke-linecap="round" stroke-linejoin="round">
-              <rect x="1" y="1" width="13" height="13" rx="1"/>
-            </svg>
-            <span>Open</span>
-          </div>
-        </div>`).join('');
 
     return `
       <h2 class="ad-body-heading">${art.title}</h2>
@@ -544,12 +537,39 @@
           <li>Secure international shipping</li>
           <li>Protective packaging suitable for collectors</li>
         </ul>
-      </div>
-      <div class="ad-explore">
-        <p class="ad-explore__label">Continue Exploring</p>
-        <div class="ad-explore-track" id="adExploreTrack">
-          ${exploreCards}
-        </div>
+      </div>`;
+  }
+
+  function buildExploreSectionHTML(currentIdx) {
+    const TYPES_8 = ['P','L','P','L','P','L','P','L'];
+    const cards = ARTWORKS
+      .map((a, i) => ({ a, i }))
+      .filter(({ i }) => i !== currentIdx)
+      .map(({ a, i }, pos) => {
+        const type = TYPES_8[pos] || 'P';
+        return `
+          <div class="ad-explore-card" data-explore-idx="${i}" data-type="${type}"
+               tabindex="0" role="button" aria-label="View ${a.title}">
+            <div class="ad-explore-thumb artwork__placeholder ${a.css}"></div>
+            <div class="ad-explore-info">
+              <span class="ad-explore-num">${a.num}</span>
+              <span class="ad-explore-title">${a.title}</span>
+            </div>
+            <div class="ad-explore-hover" aria-hidden="true">
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none"
+                   stroke="currentColor" stroke-width="1.4"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <rect x="1" y="1" width="13" height="13" rx="1"/>
+              </svg>
+              <span>Open</span>
+            </div>
+          </div>`;
+      }).join('');
+
+    return `
+      <p class="ad-explore__label">Continue Exploring</p>
+      <div class="ad-explore-track" id="adExploreTrack">
+        ${cards}
       </div>`;
   }
 
@@ -570,6 +590,11 @@
       adScroller.removeEventListener('scroll', adScrollerListener);
       adScrollerListener = null;
     }
+    if (adExploreFadeListener && adScroller) {
+      adScroller.removeEventListener('scroll', adExploreFadeListener);
+      adExploreFadeListener = null;
+    }
+    adImg.style.opacity = '';
 
     /* Populate content */
     adImg.className = `ad-img artwork__placeholder ${art.css}`;
@@ -578,7 +603,9 @@
     document.getElementById('adTitle').textContent   = art.title;
     document.getElementById('adStNum').textContent   = art.num;
     document.getElementById('adStTitle').textContent = art.title;
-    adBody.innerHTML = buildAdBody(art, idx);
+    adBody.innerHTML = buildAdBody(art);
+    const adExploreSection = document.getElementById('adExploreSection');
+    if (adExploreSection) adExploreSection.innerHTML = buildExploreSectionHTML(idx);
 
     const VW = window.innerWidth;
     const VH = window.innerHeight;
@@ -603,12 +630,13 @@
       const heroLeft = Math.round((VW - heroW) / 2);
       const heroTop  = Math.round(VH * 0.10);
 
-      // Sidebar image — 40% of viewport width, height capped to fit screen
-      const sideLeft  = 36;
-      const sideTop   = 40;
-      const sideW     = Math.round(VW * 0.40);
-      const maxSideH  = VH - sideTop - 40;
-      const sideH     = Math.min(Math.round(sideW * 1.5), maxSideH);
+      // Sidebar image — 40% of viewport width; reserve 96px below for the title
+      const sideLeft   = 36;
+      const sideTop    = 40;
+      const sideW      = Math.round(VW * 0.40);
+      const titleAreaH = 96;                              // space for num + title below image
+      const maxSideH   = VH - sideTop - titleAreaH - 16; // 16px gap between image and text
+      const sideH      = Math.min(Math.round(sideW * 1.5), maxSideH);
 
       const htTop    = heroTop + heroH + 24;          // hero text below image
       const stTop    = sideTop + sideH + 16;          // sidebar text below image
@@ -656,6 +684,21 @@
       });
 
       ScrollTrigger.refresh();
+
+      /* Image stays sticky until Continue Exploring enters the viewport,
+         then scrolls upward at exactly 1:1 with the page */
+      if (adExploreSection) {
+        adExploreFadeListener = () => {
+          const dist = adExploreSection.offsetTop
+                       - (adScroller.scrollTop + window.innerHeight);
+          if (dist <= 0) {
+            const lift = -dist;
+            gsap.set(adImg,         { top: sideTop - lift });
+            gsap.set(adSidebarText, { top: stTop   - lift });
+          }
+        };
+        adScroller.addEventListener('scroll', adExploreFadeListener, { passive: true });
+      }
     }
 
     detEl.classList.add('active');
@@ -673,6 +716,12 @@
       adScroller.removeEventListener('scroll', adScrollerListener);
       adScrollerListener = null;
     }
+    if (adExploreFadeListener && adScroller) {
+      adScroller.removeEventListener('scroll', adExploreFadeListener);
+      adExploreFadeListener = null;
+    }
+    const adImgEl = document.getElementById('adImg');
+    if (adImgEl) adImgEl.style.opacity = '';
 
     gsap.to(detEl, {
       opacity: 0, duration: 0.35, ease: 'power2.in',
@@ -696,29 +745,34 @@
 
   function setMusicPlaying(playing) {
     musicPlaying = playing;
-    const toggle = document.getElementById('galleryMusicToggle');
-    if (toggle) {
-      toggle.classList.toggle('active', playing);
-      toggle.setAttribute('aria-pressed', playing ? 'true' : 'false');
-    }
+    ['galleryMusicToggle', 'adMusicToggle'].forEach(id => {
+      const btn = document.getElementById(id);
+      if (!btn) return;
+      btn.classList.toggle('active', playing);
+      btn.setAttribute('aria-pressed', playing ? 'true' : 'false');
+    });
     sendSpotify(playing ? 'play' : 'pause');
   }
 
   function initMusicPlayer() {
-    const toggle = document.getElementById('galleryMusicToggle');
-    if (!toggle) return;
+    const toggle    = document.getElementById('galleryMusicToggle');
+    const adToggle  = document.getElementById('adMusicToggle');
+    if (toggle)   toggle.addEventListener('click',   () => setMusicPlaying(!musicPlaying));
+    if (adToggle) adToggle.addEventListener('click', () => setMusicPlaying(!musicPlaying));
 
-    toggle.addEventListener('click', () => setMusicPlaying(!musicPlaying));
-
-    /* Listen for Spotify playback state changes */
+    /* Listen for Spotify playback state changes — update UI only, no command echo */
     window.addEventListener('message', e => {
       if (!e.data || typeof e.data !== 'object') return;
       const { type, payload } = e.data;
       if (type === 'playback_update') {
         const playing = payload && !payload.isPaused;
         musicPlaying = playing;
-        toggle.classList.toggle('active', playing);
-        toggle.setAttribute('aria-pressed', playing ? 'true' : 'false');
+        ['galleryMusicToggle', 'adMusicToggle'].forEach(id => {
+          const btn = document.getElementById(id);
+          if (!btn) return;
+          btn.classList.toggle('active', playing);
+          btn.setAttribute('aria-pressed', playing ? 'true' : 'false');
+        });
       }
     });
   }
