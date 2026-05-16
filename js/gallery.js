@@ -730,6 +730,17 @@
 
   /* ── Music player toggle ────────────────────────────────── */
   let musicPlaying = false;
+  let userPaused   = false;   // true only when user explicitly pressed pause
+  let pendingPlay  = false;   // play was requested before controller was ready
+
+  function syncMusicButtons(playing) {
+    ['galleryMusicToggle', 'adMusicToggle'].forEach(id => {
+      const btn = document.getElementById(id);
+      if (!btn) return;
+      btn.classList.toggle('active', playing);
+      btn.setAttribute('aria-pressed', playing ? 'true' : 'false');
+    });
+  }
 
   function sendSpotify(cmd) {
     if (!spotifyController) return;
@@ -738,13 +749,10 @@
   }
 
   function setMusicPlaying(playing) {
+    userPaused   = !playing;
     musicPlaying = playing;
-    ['galleryMusicToggle', 'adMusicToggle'].forEach(id => {
-      const btn = document.getElementById(id);
-      if (!btn) return;
-      btn.classList.toggle('active', playing);
-      btn.setAttribute('aria-pressed', playing ? 'true' : 'false');
-    });
+    syncMusicButtons(playing);
+    if (!spotifyController && playing) { pendingPlay = true; return; }
     sendSpotify(playing ? 'play' : 'pause');
   }
 
@@ -758,21 +766,34 @@
     function createSpotifyController(IFrameAPI) {
       const element = document.getElementById('spotifyEmbed');
       if (!element) return;
+      /* Use default iframe size — 0×0 causes browser throttling/suspension */
       IFrameAPI.createController(
         element,
-        { uri: 'spotify:track:0E4hFnEC0U8t4gxEAX8X3Y', width: 0, height: 0 },
+        { uri: 'spotify:track:0E4hFnEC0U8t4gxEAX8X3Y' },
         (controller) => {
           spotifyController = controller;
-          controller.setVolume(0.35);          // 35% default volume
+          controller.setVolume(0.35);
+
+          /* Execute any play that was requested before the controller was ready */
+          if (pendingPlay) { pendingPlay = false; controller.play(); }
+
           controller.addListener('playback_update', e => {
             const playing = !e.data.isPaused;
+
+            /* Auto-resume if Spotify paused on its own (buffering, track end, etc.)
+               and the user has not deliberately pressed pause */
+            if (!playing && !userPaused && musicPlaying) {
+              setTimeout(() => {
+                if (!userPaused && spotifyController) {
+                  spotifyController.play();
+                  spotifyController.setVolume(0.35);
+                }
+              }, 600);
+              return; // don't update UI — treat it as still playing
+            }
+
             musicPlaying = playing;
-            ['galleryMusicToggle', 'adMusicToggle'].forEach(id => {
-              const btn = document.getElementById(id);
-              if (!btn) return;
-              btn.classList.toggle('active', playing);
-              btn.setAttribute('aria-pressed', playing ? 'true' : 'false');
-            });
+            syncMusicButtons(playing);
           });
         }
       );
