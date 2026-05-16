@@ -163,6 +163,7 @@
   let items    = [];
   let lastCfg  = null;
   let adTl = null, adSt = null, adScrollerListener = null, adExploreFadeListener = null;
+  let spotifyController = null;
 
   /* ═══════════════════════════════════════════════════════════
      BUILD HTML
@@ -230,14 +231,8 @@
                 <path d="M9 3v12.26A4 4 0 1 0 11 19V8h5V3H9z"/>
               </svg>
             </button>
-            <!-- Hidden iframe — audio only, off-screen -->
-            <iframe id="spotifyFrame"
-              src="https://open.spotify.com/embed/track/0E4hFnEC0U8t4gxEAX8X3Y?utm_source=generator&theme=0&autoplay=1"
-              width="280" height="80"
-              frameborder="0"
-              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-              class="gallery-music__iframe">
-            </iframe>
+            <!-- Spotify IFrame API placeholder — API injects iframe here -->
+            <div id="spotifyEmbed" class="gallery-music__iframe"></div>
           </div>
         </div>
 
@@ -737,10 +732,9 @@
   let musicPlaying = false;
 
   function sendSpotify(cmd) {
-    const frame = document.getElementById('spotifyFrame');
-    if (frame && frame.contentWindow) {
-      frame.contentWindow.postMessage({ command: cmd }, '*');
-    }
+    if (!spotifyController) return;
+    if (cmd === 'play')  spotifyController.play();
+    if (cmd === 'pause') spotifyController.pause();
   }
 
   function setMusicPlaying(playing) {
@@ -755,26 +749,44 @@
   }
 
   function initMusicPlayer() {
-    const toggle    = document.getElementById('galleryMusicToggle');
-    const adToggle  = document.getElementById('adMusicToggle');
+    const toggle   = document.getElementById('galleryMusicToggle');
+    const adToggle = document.getElementById('adMusicToggle');
     if (toggle)   toggle.addEventListener('click',   () => setMusicPlaying(!musicPlaying));
     if (adToggle) adToggle.addEventListener('click', () => setMusicPlaying(!musicPlaying));
 
-    /* Listen for Spotify playback state changes — update UI only, no command echo */
-    window.addEventListener('message', e => {
-      if (!e.data || typeof e.data !== 'object') return;
-      const { type, payload } = e.data;
-      if (type === 'playback_update') {
-        const playing = payload && !payload.isPaused;
-        musicPlaying = playing;
-        ['galleryMusicToggle', 'adMusicToggle'].forEach(id => {
-          const btn = document.getElementById(id);
-          if (!btn) return;
-          btn.classList.toggle('active', playing);
-          btn.setAttribute('aria-pressed', playing ? 'true' : 'false');
-        });
-      }
-    });
+    /* Load Spotify IFrame API — gives us play/pause/setVolume */
+    function createSpotifyController(IFrameAPI) {
+      const element = document.getElementById('spotifyEmbed');
+      if (!element) return;
+      IFrameAPI.createController(
+        element,
+        { uri: 'spotify:track:0E4hFnEC0U8t4gxEAX8X3Y', width: 0, height: 0 },
+        (controller) => {
+          spotifyController = controller;
+          controller.setVolume(0.35);          // 35% default volume
+          controller.addListener('playback_update', e => {
+            const playing = !e.data.isPaused;
+            musicPlaying = playing;
+            ['galleryMusicToggle', 'adMusicToggle'].forEach(id => {
+              const btn = document.getElementById(id);
+              if (!btn) return;
+              btn.classList.toggle('active', playing);
+              btn.setAttribute('aria-pressed', playing ? 'true' : 'false');
+            });
+          });
+        }
+      );
+    }
+
+    if (window.SpotifyIframeApi) {
+      createSpotifyController(window.SpotifyIframeApi);
+    } else {
+      window.onSpotifyIframeApiReady = createSpotifyController;
+      const s = document.createElement('script');
+      s.src = 'https://open.spotify.com/embed/iframe-api/v1';
+      s.async = true;
+      document.body.appendChild(s);
+    }
   }
 
   /* ═══════════════════════════════════════════════════════════
