@@ -766,13 +766,30 @@
     function createSpotifyController(IFrameAPI) {
       const element = document.getElementById('spotifyEmbed');
       if (!element) return;
-      /* Use default iframe size — 0×0 causes browser throttling/suspension */
+
+      /* Spotify injects a position:fixed iframe that escapes CSS container clipping.
+         Watch for it and force it off-screen the moment it appears. */
+      const hideInjectedFrame = (node) => {
+        if (node.tagName !== 'IFRAME') return;
+        node.style.cssText =
+          'position:fixed!important;left:-9999px!important;top:-9999px!important;' +
+          'width:300px!important;height:80px!important;opacity:0!important;pointer-events:none!important;';
+      };
+      const mo = new MutationObserver(muts => {
+        muts.forEach(m => m.addedNodes.forEach(hideInjectedFrame));
+      });
+      mo.observe(element, { childList: true });
+      /* Also catch if the iframe was already injected before observer attached */
+      element.querySelectorAll('iframe').forEach(hideInjectedFrame);
+
       IFrameAPI.createController(
         element,
         { uri: 'spotify:track:0E4hFnEC0U8t4gxEAX8X3Y' },
         (controller) => {
           spotifyController = controller;
           controller.setVolume(0.35);
+          /* Re-apply hide in case Spotify repositions after creation */
+          element.querySelectorAll('iframe').forEach(hideInjectedFrame);
 
           /* Execute any play that was requested before the controller was ready */
           if (pendingPlay) { pendingPlay = false; controller.play(); }
